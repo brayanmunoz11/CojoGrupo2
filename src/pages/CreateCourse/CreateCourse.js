@@ -1,8 +1,15 @@
 import { useHistory } from "react-router-dom";
+import { useState } from 'react';
 import "./CreateCourse.css";
 const CreateCourse = (props) => {
   let history = useHistory();
+  const [creado, setcreado] = useState(false)
+  const [errorCourse, seterrorCourse] = useState("")
   
+  const errores = {
+    "auth/internal-error" : "El servidor de Authentication encontró un error inesperado cuando se intentaba procesar la solicitud. ",
+  }
+
   const registrarCurso = (e) => {
     e.preventDefault();
     const form = e.target;
@@ -26,9 +33,9 @@ const CreateCourse = (props) => {
     })
       .then(res => res.json())
       .then(data => {        
-        setlogeado(true);        
+        setcreado(true);        
       })
-      .catch(err => seterrorRegister(errores[err.error] || 'Hubo un problema'));
+      .catch(err => seterrorCourse(errores[err.error] || 'Hubo un problema'));
 
     history.push("/");
   };
