@@ -1,29 +1,35 @@
 import { useHistory } from "react-router-dom";
+import React from "react";
 import { useState } from 'react';
 import "./CreateCourse.css";
 const CreateCourse = (props) => {
   let history = useHistory();
   const [creado, setcreado] = useState(false)
   const [errorCourse, seterrorCourse] = useState("")
-  
+
   const errores = {
-    "auth/internal-error" : "El servidor de Authentication encontró un error inesperado cuando se intentaba procesar la solicitud. ",
+    "auth/internal-error": "El servidor de Authentication encontró un error inesperado cuando se intentaba procesar la solicitud. ",
   }
 
   const registrarCurso = (e) => {
     e.preventDefault();
     const form = e.target;
     const data = {
-      //user_id: "",
       name: form.name.value,
-      category: form.category.value,
+      category: true,
       description: form.description.value,
+      user_id: sessionStorage.getItem("user")
       //students: form.students.value,
       //date: form.date.value,
       //image: form.image.value,
     };
-    
-    fetch('/createCourse', {
+    console.log(form.category.value)
+    if (form.category.value !== "publico") {
+      data.category = false
+    }
+
+
+    fetch('/CreateCourse', {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {
@@ -32,8 +38,9 @@ const CreateCourse = (props) => {
       }
     })
       .then(res => res.json())
-      .then(data => {        
-        setcreado(true);        
+      .then(d => {
+        setcreado(true);
+        console.log("apura MRD")
       })
       .catch(err => seterrorCourse(errores[err.error] || 'Hubo un problema'));
 
@@ -43,12 +50,12 @@ const CreateCourse = (props) => {
   return (
     <div>
       <form className="form_Curso" onSubmit={registrarCurso}>
-        <h1>CREAR CURSO</h1>
+        <h1>Crear Curso</h1>
         <div>
           <div className="form__item">
             <div>
               <label htmlFor="name">
-                Codigo de curso
+                Nombre
                 <input
                   type="text"
                   name="name"
@@ -59,32 +66,29 @@ const CreateCourse = (props) => {
               </label>
             </div>
             <div>
-              <label htmlFor="categoria">
-                Nombre curso
-                <input
-                  type="text"
-                  name="categoria"
-                  id="categoria"
-                  placeholder="Ingrese categoria de curso"
-                  required
-                />
-              </label>
-            </div>
-            <div>
               <label htmlFor="descripcion">
-                Ingrese la categoria
+                Ingrese una descripción
                 <input
                   type="text"
-                  name="descripcion"
+                  name="description"
                   id="descripcion"
                   placeholder="Ingrese una descripcion"
                   required
                 />
               </label>
             </div>
+            <div>
+              <label htmlFor="categoria">
+                Privacidad
+              </label>
+              <select name="category">
+                <option value="publico">Público</option>
+                <option value="privado">Privado</option>
+              </select>
+            </div>
           </div>
           <div className="form_item">
-            <input type="submit" className="button full" value="Crear" red />
+            <input type="submit" value="Crear" />
           </div>
         </div>
       </form>
