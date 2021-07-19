@@ -37,7 +37,7 @@ const App = () => {
     
   return (
     <Router>
-      <Header user={user}/>
+      <Header user={user} />
       <Switch>
         <Route exact path="/editprofile">
           <EditProfile />
