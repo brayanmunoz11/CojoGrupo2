@@ -24,10 +24,7 @@ const App = () => {
   useEffect(() => {       
     console.log(user)
     if (sessionStorage.getItem("user") !== null) {
-      // Restaura el contenido al campo de texto
-      console.log(sessionStorage.getItem("user"))      
       setuser(sessionStorage.getItem("user"))
-      console.log(user)
     }    
     else {
       setuser('')
