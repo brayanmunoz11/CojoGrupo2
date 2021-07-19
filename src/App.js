@@ -45,7 +45,7 @@ const App = () => {
         <Route exact path="/profile">
           <Profile />
         </Route>
-        <Route exact path="/crear">
+        <Route exact path="/CreateCourse">
           <CreateCourse user={user} />
         </Route>
         <Route exact path="/login">
@@ -54,14 +54,14 @@ const App = () => {
         <Route exact path="/register">
           <Register />
         </Route>
+        <Route exact path="/mycourses">
+          <MyCourses />
+        </Route>
         <Route exact path="/:topic">
           <CoursePage />
         </Route>
         <Route exact path="/:topic/taskcreate">
           <CreateTask />
-        </Route>
-        <Route exact path="/mycourses">
-          <MyCourses />
         </Route>
         <Route exact path="/">
           {user === '' ? <Home /> : <Main user={user} />}
