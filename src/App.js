@@ -43,7 +43,7 @@ const App = () => {
           <Profile />
         </Route>
         <Route exact path="/crear">
-          <CreateCourse user={user} />
+          <CreateCourse />
         </Route>
         <Route exact path="/login">
           <Login />
