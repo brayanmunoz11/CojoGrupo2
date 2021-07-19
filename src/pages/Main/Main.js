@@ -73,7 +73,7 @@ const Main = ({ filterSearch}) => {
         Enseña lo que sabes 
       </Typography>
       <Banner imgBanner={imgEnsenar} 
-              redir="/mycourses" 
+              redir="/crear" 
               textButton="Crear un curso" 
               title={["Enseña a", "mejorar", "progresar", "triunfar"]} 
               paragraph="Puedes ayudar a otras personas compartiendo tus conocimientos. Crea cursos e invita personas"               
