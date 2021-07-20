@@ -34,30 +34,30 @@ const App = () => {
     
   return (
     <Router>
-      <Header user={user} />
-      <Switch>
-        <Route exact path="/editprofile">
-          <EditProfile />
-        </Route>
+      <Header user={user}/>
+      <Switch>        
         <Route exact path="/profile">
           <Profile />
         </Route>
-        <Route exact path="/CreateCourse">
-          <CreateCourse user={user} />
+        <Route exact path="/profile/edit">
+          <EditProfile />
         </Route>
         <Route exact path="/login">
           <Login />
         </Route>
         <Route exact path="/register">
           <Register />
-        </Route>
+        </Route>        
         <Route exact path="/mycourses">
           <MyCourses />
         </Route>
-        <Route exact path="/:topic">
+        <Route exact path="/mycourses/crear">
+          <CreateCourse user={user} />
+        </Route>
+        <Route exact path="/mycourses/:topic">
           <CoursePage />
         </Route>
-        <Route exact path="/:topic/taskcreate">
+        <Route exact path="/mycourses/:topic/taskcreate">
           <CreateTask />
         </Route>
         <Route exact path="/">
