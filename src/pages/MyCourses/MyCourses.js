@@ -17,6 +17,7 @@ const MyCourses = () => {
             "paddingTop": "20px"
         }
     }
+    
 
     useEffect(() => {
         

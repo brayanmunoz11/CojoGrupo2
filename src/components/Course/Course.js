@@ -17,7 +17,7 @@ import {Redirect, useHistory} from 'react-router-dom';
 
 import './Course.css'
 
-const Course = ({ id, curso_id, name, category, teacher_id }) => {
+const Course = ({ _id, name, description, image, datecreate}) => {
     const useStyles = makeStyles((theme) => ({
         root: {
             maxWidth: 345,
@@ -53,25 +53,17 @@ const Course = ({ id, curso_id, name, category, teacher_id }) => {
     }));
 
     const classes = useStyles();
-
-    const getDay = () => {
-        let fecha = new Date(Date.UTC(2020, 11, 20, 3, 23, 16, 738));
-        let dtf = new Intl.DateTimeFormat("es-GB", { dateStyle: "long" }).format(
-            fecha
-        );
-        return dtf;
-    };
-
     const [click, setClick] = useState(false);
-
     const history = useHistory();
-    const irTopic = `${id}`;
+    const irTopic = `${_id}`;
 
     const handleClick = (ev) => {
         history.push(irTopic);
         setClick(true);
     };
+    //D:\Proyectos\Visual Studio\ColesRoom - Grupo 2\ColesRoom-Grupo2-Backend\photos\Fondo.jpg
 
+    
     return (
         <Card className={classes.root}>
             {click && <Redirect to={irTopic} />}
@@ -87,7 +79,7 @@ const Course = ({ id, curso_id, name, category, teacher_id }) => {
                     </IconButton>
                 }
                 title={name}
-                subheader={getDay()}
+                subheader={datecreate}
             />
             <CardMedia
                 className={classes.media}
@@ -96,9 +88,7 @@ const Course = ({ id, curso_id, name, category, teacher_id }) => {
             />
             <CardContent>
                 <Typography variant="body2" color="textSecondary" component="p">
-                    This impressive paella is a perfect party dish and a fun meal to cook
-                    together with your guests. Add 1 cup of frozen peas along with the
-                    mussels, if you like.
+                    {description}
                 </Typography>
             </CardContent>
             <CardActions disableSpacing className="separar">

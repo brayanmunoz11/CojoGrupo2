@@ -23,6 +23,7 @@ const CreateCourse = (props) => {
       //date: form.date.value,
       //image: form.image.value,
     };
+    
     data.user_id = sessionStorage.getItem("user")
     if (form.category.value !== "publico") {
       data.category = false
@@ -55,25 +56,13 @@ const CreateCourse = (props) => {
             <div>
               <label htmlFor="name">
                 Nombre
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  placeholder="Ingrese nombre del curso"
-                  required
-                />
+                <input type="text" name="name" id="name" placeholder="Ingrese nombre del curso" required/>
               </label>
             </div>
             <div>
               <label htmlFor="descripcion">
                 Ingrese una descripción
-                <input
-                  type="text"
-                  name="description"
-                  id="descripcion"
-                  placeholder="Ingrese una descripcion"
-                  required
-                />
+                <input type="text" name="description" id="descripcion" placeholder="Ingrese una descripcion" required/>
               </label>
             </div>
             <div>
