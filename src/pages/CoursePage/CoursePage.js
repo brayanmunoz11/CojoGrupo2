@@ -15,15 +15,21 @@ const CoursePage = () => {
   let { topic } = useParams()
 
   const [publicaciones, setPublicaciones] = useState([])
-  const [render, setrender] = useState(false)
-  const [render2, setrender2] = useState(false)
   const [course, setCourse] = useState({})
 
-  //Falta testear
-  const handleSubmit = (value) => {       
-    value.course_id = topic    
+  useEffect(() => {
     
-    setrender(true)    
+    const getPublications = async () => {
+      const p = await fetchPublications()      
+      setPublicaciones(p)      
+    }
+
+    getPublications()
+
+  }, [])
+
+  const handleSubmit = (value) => {       
+    value.course_id = topic   
     
     fetch('/api/publications', {
       method: 'POST',
@@ -36,45 +42,21 @@ const CoursePage = () => {
       .then(response => {        
         return response.json()
       } )
-      .then(json => {
-        let publis = publicaciones;
-        
-        publis.push(value)
-        setPublicaciones(publis)
-        setrender2(true)
+      .then(json => {        
+        setPublicaciones([...publicaciones, json])        
       })
-      .catch(error => {
-        setrender2(true)
+      .catch(error => {       
         console.log(error)
       })   
 
+  }  
+
+  const fetchPublications = async () => {
+    const res = await fetch(`api/publications/${topic}`)
+    const data = await res.json()
+ 
+    return data
   }
-
-  useEffect(() => {
-    //Coger publicaciones de un curso
-    fetch(`api/publications/${topic}`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(response => {        
-        return response.json()
-      }
-    )
-      .then(json => {
-        setPublicaciones(json.publications)
-        setrender(true)
-        
-      }
-    )
-      .catch(error => {
-        console.log(error)
-      }
-    )
-
-  }, [render2])
 
   const [click, setClick] = useState(false)
   const history = useHistory()
@@ -106,8 +88,12 @@ const CoursePage = () => {
           </Button>
         </div>
         <AddPublication handleSubmit={handleSubmit} imgPerfil={imgFakePerfil} />
-        {console.log(publicaciones)}
-        <PublicationContainer publications={publicaciones} />
+        
+        {
+          publicaciones.length > 0 &&
+          <PublicationContainer publications={publicaciones} />
+        }
+        
       </div>
     );
   };

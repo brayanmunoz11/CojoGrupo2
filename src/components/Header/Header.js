@@ -20,6 +20,10 @@ import { useDispatch } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { actionCreators } from '../../redux/index.js'
 
+import MenuProfile from "./MenuProfile.js";
+import MobileMenuPrivate from "./MobileMenuPrivate.js";
+import MobileMenuPublic from "./MobileMenuPublic.js";
+
 import "./Header.css";
 
 const Header = ({user}) => {
@@ -41,6 +45,7 @@ const Header = ({user}) => {
     }
 
     let history = useHistory();
+
     const logout = () => {
         sessionStorage.clear();
         history.push("/");
@@ -61,11 +66,13 @@ const Header = ({user}) => {
         grow: {
             flexGrow: 1,
         },
+        menuButton: {
+            marginRight: theme.spacing(2),
+        },
         title: {
-            display: 'none',
-            [theme.breakpoints.up('sm')]: {
-                display: 'block',
-            },
+            display: 'block',
+            minWidth: '110px'
+            
         },
         search: {
             position: 'relative',
@@ -119,20 +126,20 @@ const Header = ({user}) => {
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
-
+    const mobileMenuId = 'primary-search-account-menu-mobile';
     const [anchorElBurger, setAnchorElBurger] = useState(null);
 
     const isMenuOpen = Boolean(anchorEl);
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-    const isMenuOpenBurger = Boolean(anchorElBurger);
+    const isMenuOpenBurger = Boolean(anchorElBurger);  
 
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
-    };
+    };       
 
-    const handleMobileMenuClose = () => {
-        setMobileMoreAnchorEl(null);
+    const handleMobileMenuOpen = (event) => {
+        setMobileMoreAnchorEl(event.currentTarget);
     };
 
     const handleMenuClose = () => {
@@ -140,18 +147,17 @@ const Header = ({user}) => {
         handleMobileMenuClose();
     };
 
-    const handleMenuBurgerClose = () => {
-        setAnchorElBurger(null);
-    };
-
+    const handleMobileMenuClose = () => {
+        setMobileMoreAnchorEl(null);
+    };    
+    
     const handleProfileMenuBurgerOpen = (event) => {
         setAnchorElBurger(event.currentTarget);
     };
 
-    const handleMobileMenuOpen = (event) => {
-        setMobileMoreAnchorEl(event.currentTarget);
+    const handleMenuBurgerClose = () => {
+        setAnchorElBurger(null);
     };
-
     const menuId = 'primary-search-account-menu'
     const menuIdBurger = 'primary-search-account-menu-burger'
     const renderMenu = (<Menu
@@ -179,8 +185,6 @@ const Header = ({user}) => {
             <MenuItem onClick={MyCourses}> Mis cursos</MenuItem>
             <MenuItem onClick={CoursesCreated}>Cursos que enseño</MenuItem>
         </Menu>);
-
-    const mobileMenuId = 'primary-search-account-menu-mobile';
     const renderMobileMenu = (
         <Menu
             anchorEl={mobileMoreAnchorEl}

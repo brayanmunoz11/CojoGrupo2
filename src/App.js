@@ -1,6 +1,6 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
-import { HashRouter as Router, Switch, Route } from "react-router-dom";
+import { HashRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 
 import Home from "./pages/Home/Home.js"
 import Main from "./pages/Main/Main.js"
@@ -20,17 +20,19 @@ import { useSelector } from 'react-redux'
 const App = () => {
   const [user, setuser] = useState('');
   const userredux = useSelector(state => state.user)
+  const [render, setrender] = useState(false)
 
-  useEffect(() => {     
+  useEffect(() => {
     if (sessionStorage.getItem("user") !== null) {
       setuser(sessionStorage.getItem("user"))
-    }    
+      setrender(true)
+    }
     else {
       setuser('')
+      setrender(true)
     }
 
-  }, [user, userredux]);
-    
+  }, [user, userredux]);  
   return (
     <Router>
       <Header user={user}/>
