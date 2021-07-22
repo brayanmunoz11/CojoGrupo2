@@ -12,28 +12,24 @@ import CoursePage from "./pages/CoursePage/CoursePage.js"
 import Profile from "./pages/Profile/Profile.js"
 import EditProfile from "./pages/EditProfile/EditProfile.js"
 import MyCourses from "./pages/MyCourses/MyCourses.js"
+import CoursesCreated from "./pages/CoursesCreated/CoursesCreated.js"
 import CreateTask from "./pages/CreateTask/CreateTask.js"
 
 import { useSelector } from 'react-redux'
-import { setUser } from "./redux/actionCreators/AC";
 
 const App = () => {
   const [user, setuser] = useState('');
   const userredux = useSelector(state => state.user)
 
-  useEffect(() => {       
-    console.log(user)
+  useEffect(() => {     
     if (sessionStorage.getItem("user") !== null) {
-      // Restaura el contenido al campo de texto
-      console.log(sessionStorage.getItem("user"))      
       setuser(sessionStorage.getItem("user"))
-      console.log(user)
     }    
     else {
       setuser('')
     }
 
-  }, [userredux]);
+  }, [user, userredux]);
     
   return (
     <Router>
@@ -54,17 +50,20 @@ const App = () => {
         <Route exact path="/mycourses">
           <MyCourses />
         </Route>
-        <Route exact path="/mycourses/crear">
-          <CreateCourse user={user} />
+        <Route exact path="/coursescreated">
+          <CoursesCreated/>
         </Route>
-        <Route exact path="/mycourses/:topic">
-          <CoursePage />
+        <Route exact path="/CreateCourse">
+          <CreateCourse/>
         </Route>
-        <Route exact path="/mycourses/:topic/taskcreate">
-          <CreateTask />
+        <Route exact path="/:topic">
+          <CoursePage/>
+        </Route>
+        <Route exact path="/:topic/taskcreate">
+          <CreateTask/>
         </Route>
         <Route exact path="/">
-          {user === '' ? <Home /> : <Main user={user} />}
+          {user === '' ? <Home /> : <Main/>}
         </Route>
       </Switch>
     </Router>
