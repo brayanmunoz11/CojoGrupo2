@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import { Component } from 'react'
 const CoursesCreated = () => {
 
 

@@ -1,31 +1,58 @@
 import Course from "../Course/Course.js"
 import './CourseContainer.css'
 import '../../utils.css'
-import React, {useEffect} from 'react'
+import React, { Component } from 'react'
 
-import { useSelector } from 'react-redux'
+class CourseContainer extends Component {
 
-const CourseContainer = () => {
-    const search = useSelector(state => state.search)
-    const condition = (co) => (co.nombre.toLowerCase().includes(search.toLowerCase()))
-    let coursesList=[];
-    useEffect(()=>{
-      console.log ("componete fue montado")
-      fectchTask()
-      
-  })
-
-  const fectchTask = () => {
-      fetch('/courses')
-          .then(res => res.json())
-          .then(data => {console.log(data)})
+  constructor() {
+    super();
+    this.state = {
+      coursesList: []
+    };
+    this.handleChange = this.handleChange.bind(this);
   }
-    return (
-        <div className="course-container">
-          holas
-        </div>
 
+  handleChange(e) {
+    const { name, value } = e.target;
+    this.setState({
+      [name]: value
+    });
+  }
+
+  componentDidMount() {
+    this.fetchTasks();
+  }
+
+  fetchTasks() {
+    fetch('/courses')
+      .then(res => res.json())
+      .then(data => {
+        
+        this.setState({ coursesList: data });
+      });
+  }
+
+  render() {
+    return (
+      <div className="course-container">
+        <div className="grid-courses">
+        {this.state.coursesList.map(co => (
+          <Course 
+            curso_id={co._id}
+            name={co.name}
+            category={co.category}
+            teacher_id={co.user_id}
+            description={co.description}
+            imagen={co.description}
+            image={co.image}
+            datecreate={co.datecreate} />
+        ))
+        }
+        </div>
+      </div>
     )
+  }
 }
 
 export default CourseContainer

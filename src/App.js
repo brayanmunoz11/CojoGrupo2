@@ -56,10 +56,10 @@ const App = () => {
         <Route exact path="/CreateCourse">
           <CreateCourse/>
         </Route>
-        <Route exact path="/mycourses/:topic">
+        <Route exact path="/:topic">
           <CoursePage/>
         </Route>
-        <Route exact path="/mycourses/:topic/taskcreate">
+        <Route exact path="/:topic/taskcreate">
           <CreateTask/>
         </Route>
         <Route exact path="/">

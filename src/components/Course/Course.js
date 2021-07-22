@@ -17,7 +17,7 @@ import {Redirect, useHistory} from 'react-router-dom';
 
 import './Course.css'
 
-const Course = ({ _id, name, description, image, datecreate}) => {
+const Course = ({ curso_id,name, category,user_id,description,image, datecreate}) => {
     const useStyles = makeStyles((theme) => ({
         root: {
             maxWidth: 345,
@@ -55,24 +55,17 @@ const Course = ({ _id, name, description, image, datecreate}) => {
     const classes = useStyles();
     const [click, setClick] = useState(false);
     const history = useHistory();
-    const irTopic = `${_id}`;
+    const irTopic = `${curso_id}`;
 
     const handleClick = (ev) => {
         history.push(irTopic);
         setClick(true);
     };
     //D:\Proyectos\Visual Studio\ColesRoom - Grupo 2\ColesRoom-Grupo2-Backend\photos\Fondo.jpg
-
-    
     return (
         <Card className={classes.root}>
             {click && <Redirect to={irTopic} />}
             <CardHeader
-                avatar={
-                    <Avatar aria-label="recipe" className={classes.avatar}>
-                        {name.substring(0, 1)}
-                    </Avatar>
-                }
                 action={
                     <IconButton aria-label="settings">
                         <MoreVertIcon />
@@ -87,7 +80,7 @@ const Course = ({ _id, name, description, image, datecreate}) => {
                 title="Paella dish"
             />
             <CardContent>
-                <Typography variant="body2" color="textSecondary" component="p">
+                <Typography variant="body2" color="textSecondary" component="p" className="limit-description">
                     {description}
                 </Typography>
             </CardContent>
