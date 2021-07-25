@@ -1,8 +1,9 @@
+import React from 'react';
 import { useHistory } from "react-router-dom";
-import React from "react";
 import { useState } from 'react';
 import "./CreateCourse.css";
 const CreateCourse = (props) => {
+  
   let history = useHistory();
   const [creado, setcreado] = useState(false)
   const [errorCourse, seterrorCourse] = useState("")
@@ -18,18 +19,18 @@ const CreateCourse = (props) => {
       name: form.name.value,
       category: true,
       description: form.description.value,
-      user_id: sessionStorage.getItem("user")
       //students: form.students.value,
       //date: form.date.value,
       //image: form.image.value,
     };
-    console.log(form.category.value)
+    
+    data.user_id = sessionStorage.getItem("user")
     if (form.category.value !== "publico") {
       data.category = false
     }
 
 
-    fetch('/CreateCourse', {
+    fetch('/api/CreateCourse', {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {
@@ -40,7 +41,6 @@ const CreateCourse = (props) => {
       .then(res => res.json())
       .then(d => {
         setcreado(true);
-        console.log("apura MRD")
       })
       .catch(err => seterrorCourse(errores[err.error] || 'Hubo un problema'));
 
@@ -56,25 +56,13 @@ const CreateCourse = (props) => {
             <div>
               <label htmlFor="name">
                 Nombre
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  placeholder="Ingrese nombre del curso"
-                  required
-                />
+                <input type="text" name="name" id="name" placeholder="Ingrese nombre del curso" required/>
               </label>
             </div>
             <div>
               <label htmlFor="descripcion">
                 Ingrese una descripción
-                <input
-                  type="text"
-                  name="description"
-                  id="descripcion"
-                  placeholder="Ingrese una descripcion"
-                  required
-                />
+                <input type="text" name="description" id="descripcion" placeholder="Ingrese una descripcion" required/>
               </label>
             </div>
             <div>

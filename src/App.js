@@ -1,6 +1,6 @@
 import "./App.css";
 import React, { useState, useEffect } from "react";
-import { HashRouter as Router, Switch, Route } from "react-router-dom";
+import { HashRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 
 import Home from "./pages/Home/Home.js"
 import Main from "./pages/Main/Main.js"
@@ -12,62 +12,114 @@ import CoursePage from "./pages/CoursePage/CoursePage.js"
 import Profile from "./pages/Profile/Profile.js"
 import EditProfile from "./pages/EditProfile/EditProfile.js"
 import MyCourses from "./pages/MyCourses/MyCourses.js"
+import CoursesCreated from "./pages/CoursesCreated/CoursesCreated.js"
 import CreateTask from "./pages/CreateTask/CreateTask.js"
 
 import { useSelector } from 'react-redux'
-import { setUser } from "./redux/actionCreators/AC";
 
 const App = () => {
-  const [user, setuser] = useState('');
+  const [user, setuser] = useState(sessionStorage.getItem("user"));
   const userredux = useSelector(state => state.user)
+  const [render, setrender] = useState(false)
 
-  useEffect(() => {       
-    console.log(user)
+  useEffect(() => {
     if (sessionStorage.getItem("user") !== null) {
-      // Restaura el contenido al campo de texto
-      console.log(sessionStorage.getItem("user"))      
       setuser(sessionStorage.getItem("user"))
-      console.log(user)
-    }    
+      setrender(true)
+    }
     else {
       setuser('')
+      setrender(true)
     }
-
   }, [userredux]);
-    
+
   return (
     <Router>
-      <Header user={user}/>
-      <Switch>
-        <Route exact path="/editprofile">
-          <EditProfile />
-        </Route>
-        <Route exact path="/profile">
-          <Profile />
-        </Route>
-        <Route exact path="/CreateCourse">
-          <CreateCourse user={user} />
-        </Route>
-        <Route exact path="/login">
-          <Login />
-        </Route>
-        <Route exact path="/register">
-          <Register />
-        </Route>
-        <Route exact path="/mycourses">
-          <MyCourses />
-        </Route>
-        <Route exact path="/:topic">
-          <CoursePage />
-        </Route>
-        <Route exact path="/:topic/taskcreate">
-          <CreateTask />
-        </Route>
-        <Route exact path="/">
-          {user === '' ? <Home /> : <Main user={user} />}
-        </Route>
-      </Switch>
-    </Router>
+      <Header user={user} />
+      {
+        !render
+          ?
+          < Switch >
+            <Route exact path="/profile">
+              <Profile />
+            </Route>
+            <Route exact path="/profile/edit">
+              <EditProfile />
+            </Route>
+            <Route exact path="/mycourses">
+              <MyCourses />
+            </Route>
+            <Route exact path="/mycourses/crear">
+              <CreateCourse user={user} />
+            </Route>
+            <Route exact path="/mycourses/:topic">
+              <CoursePage />
+            </Route>
+            <Route exact path="/mycourses/:topic/taskcreate">
+              <CreateTask />
+            </Route>
+            <Route exact path="/login">
+              <Login />
+            </Route>
+            <Route exact path="/register">
+              <Register />
+            </Route>
+            <Route exact path="/">
+              {user === '' ? <Home /> : <Main user={user} />}
+            </Route>
+            <Route path="/">
+              <Redirect to="/" />
+            </Route>
+          </Switch>
+          :
+          user === ''
+            ?
+            <Switch>
+              <Route exact path="/login">
+                <Login />
+              </Route>
+              <Route exact path="/register">
+                <Register />
+              </Route>
+              <Route exact path="/">
+                <Home />
+              </Route>
+              <Route path="/">
+                <Redirect to="/" />
+              </Route>
+            </Switch>
+            :
+            <Switch>
+              <Route exact path="/profile">
+                <Profile />
+              </Route>
+              <Route exact path="/profile/edit">
+                <EditProfile />
+              </Route>
+              <Route exact path="/mycourses">
+                <MyCourses />
+              </Route>
+              <Route exact path="/mycourses/crear">
+                <CreateCourse user={user} />
+              </Route>
+              <Route exact path="/mycourses/:topic">
+                <CoursePage />
+              </Route>
+              <Route exact path="/mycourses/:topic/taskcreate">
+                <CreateTask />
+              </Route>
+              <Route exact path="/">
+                <Main user={user} />
+              </Route>
+              <Route path="/">
+                <Redirect to="/" />
+              </Route>
+            </Switch>
+
+      }     
+    </Router >
+
+
   );
 };
 
