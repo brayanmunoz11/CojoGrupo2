@@ -46,11 +46,8 @@ const Register = () => {
         setlogeado(true);          
         sessionStorage.setItem("user", d.id)  
         setUser(d.id)        
-      })
-      .catch(err => seterrorRegister(errores[err.error] || 'Hubo un problema'));
-
+      });
   }
-
 
   const [cambio, setcambio] = useState("")
   const handleChangeInput = evento => {
