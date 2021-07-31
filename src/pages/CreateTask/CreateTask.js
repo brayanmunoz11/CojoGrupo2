@@ -28,7 +28,7 @@ const CreateTask = () => {
             .then(d => {        
               console.log(d)
             })
-            .catch(err => seterrorRegister(errores[err.error] || 'Hubo un problema'));
+            .catch(err => console.log(err));
     }
 
 
