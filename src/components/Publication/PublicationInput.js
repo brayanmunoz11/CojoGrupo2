@@ -35,7 +35,7 @@ const PublicationInput = ({ handleCancel, handleSubmit, filesDefault, valueDefau
                 size: input.files[0].size,
                 type: input.files[0].type,
             }
-            fetch('/upload', {
+            fetch('https://colesroom.herokuapp.com/upload', {
                 method: 'POST',
                 body: JSON.stringify(fileObj),
                 headers: {

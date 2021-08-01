@@ -105,7 +105,7 @@ const Publication = ({ p, onDelete, viewControls }) => {
     useEffect(() => {
         // Fetch a publicacion. routes para coger los valores de esos ids.
         setPublication(p);
-        fetch('/file', {
+        fetch('https://colesroom.herokuapp.com/file', {
             method: 'POST',
             body: JSON.stringify({
                 files: p.route,

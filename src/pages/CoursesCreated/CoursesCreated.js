@@ -9,7 +9,7 @@ const CoursesCreated = () => {
     })
 
     const fectchTask = () => {
-        fetch('/courses')
+        fetch('https://colesroom.herokuapp.com/courses')
             .then(res => res.json())
             .then(data => console.log(data))
     }

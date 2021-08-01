@@ -52,7 +52,7 @@ const CoursePage = () => {
   const handleSubmit = (value) => {
     value.course_id = topic
 
-    fetch('/api/publications', {
+    fetch('https://colesroom.herokuapp.com/api/publications', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

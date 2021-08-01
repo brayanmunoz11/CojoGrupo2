@@ -30,7 +30,7 @@ const CreateCourse = (props) => {
     }
 
 
-    fetch('/api/CreateCourse', {
+    fetch('https://colesroom.herokuapp.com/api/CreateCourse', {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {

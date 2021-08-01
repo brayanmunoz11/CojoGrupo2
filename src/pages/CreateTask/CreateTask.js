@@ -16,7 +16,7 @@ const CreateTask = () => {
             categoria: form.categoria.value,
           };
 
-          fetch('/taskcreate', {
+          fetch('https://colesroom.herokuapp.com/taskcreate', {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {

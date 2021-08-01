@@ -68,7 +68,7 @@ const Course = ({ curso_id, name, category, teacher_id, description, image, date
             userID: sessionStorage.getItem("user"),
             courseID: curso_id
         }
-        fetch('/api/join', {
+        fetch('https://colesroom.herokuapp.com/api/join', {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
