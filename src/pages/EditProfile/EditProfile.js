@@ -151,6 +151,7 @@ const EditProfile = memo(() => {
               </Grid>
               <Grid item>
                 <TextField
+                  required
                   id="email"
                   type="email"
                   value={email}
