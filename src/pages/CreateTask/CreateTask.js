@@ -10,75 +10,52 @@ const CreateTask = () => {
     const [date, setTime] = useState("")
     const [files, setFiles] = useState([]);
     const [filesID, setFilesID] = useState([]);
-    const validarCampos = (e) => {
-        var nom=  document.getElementById("nombre").value.replace(/\s+/g, '')
-        var ap=  document.getElementById("des").value.replace(/\s+/g, '')
-        if(nom===""||ap===""){
-          alert("Rellene todos los campos!!");
-        }
-      };
+    const [camposInvalidos, setcamposInvalidos] = useState(false)
     let history = useHistory();
+
     const CrearTarea = (e) => {
         e.preventDefault();
         const form = e.target;
-
         const data = {
             course_id: sessionStorage.getItem("IDCourse"),
-            content: form.description.value,
+            content: "TAREA: "+ form.title.value+" -> "+ form.description.value,
             type: 0
         };
-
-        fetch('/api/tasks', {
-            method: 'POST',
-            body: JSON.stringify(data),
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(response => {
-                if (response.status === 200) {
-                    return response.json()
-                }
-                else {
-                    console.log('Error: ' + response.status + ' ' + response.statusText)
-                }
-            })
-            .then(json => {
-                if (json) {
-                    setFiles([...files, json.file])
-                    setFilesID([...filesID, json.fileID])
-                }
-            })
-            .catch(error => {
-                console.log('Error: ' + error)
-            })
-        let topic = sessionStorage.getItem("IDCourse")
-        sessionStorage.removeItem("IDCourse")
-        history.push(`/mycourses/${topic}`);
-    }
-
-
-    const [hourError, sethourError] = useState("")
-    const [disabled, setdisabled] = useState("")
-    
-    const handleChangeInput = evento => {
-        const { value } = evento.target;
-        var dateTime = require('node-datetime');
-        var dt = dateTime.create();
-        var formatted = dt.format('Y-m-dTH:M:S');
-        if (value < formatted) {
-            sethourError(true)
+        console.log(form.title.value, form.description.value)
+        if (form.title.value === "" || form.description.value === "") {
+            console.log(form.title.value, form.description.value)
+            setcamposInvalidos(true)
         } else {
-            sethourError(false)
+            fetch('https://colesroomapp.herokuapp.com/api/tasks', {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (response.status === 200) {
+                        return response.json()
+                    }
+                    else {
+                        console.log('Error: ' + response.status + ' ' + response.statusText)
+                    }
+                })
+                .then(json => {
+                    if (json) {
+                        setFiles([...files, json.file])
+                        setFilesID([...filesID, json.fileID])
+                    }
+                })
+                .catch(error => {
+                    console.log('Error: ' + error)
+                })
+            let topic = sessionStorage.getItem("IDCourse")
+            sessionStorage.removeItem("IDCourse")
+            history.push(`/mycourses/${topic}`);
         }
-
     }
-
-    const validaciones = e => {
-        
-    }
-
 
     useEffect(() => {
         var dateTime = require('node-datetime');
@@ -86,8 +63,6 @@ const CreateTask = () => {
         var formatted = dt.format('Y-m-dTH:M:S');
         console.log(formatted)
         setTime(formatted)
-        sethourError(false)
-        setdisabled(true)
     }, [])
 
 
@@ -103,7 +78,7 @@ const CreateTask = () => {
                     <br></br>
                     <Form.Group controlId="exampleForm.ControlTextarea1">
                         <Form.Label>Descripcion de la tarea</Form.Label>
-                        <FormControl type="text" name="description" as="textarea" rows="3" style={{ resize: "none" }} onChange={handleChangeInput}/>
+                        <FormControl type="text" name="description" as="textarea" rows="3" style={{ resize: "none" }}/>
                     </Form.Group>
                     <br></br>
                     <Form.Group>
@@ -116,21 +91,22 @@ const CreateTask = () => {
                         <div className="contenedor">
                             <div className="center">
                                 <input type="datetime-local" defaultValue={date}
-                                    min={date} name="date" onChange={handleChangeInput} />
+                                    min={date} name="date"/>
                             </div>
                         </div>
                     </Form.Group>
-                    <Button variant="success" type="submit"onClick={validarCampos}>
+                    <Button variant="success" type="submit">
                         Crear Tarea
                     </Button>
                 </Form>
                 {
-                    hourError
+                    camposInvalidos
                         ? <div>
                             <br></br>
-                            <Alert severity="error">Hora Incorrecta</Alert>
+                            <Alert severity="error">Campos Vacios</Alert>
                         </div>
-                        : <br></br>
+                        :
+                        <br></br>
                 }
             </div>
         </div>
