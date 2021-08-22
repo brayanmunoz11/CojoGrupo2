@@ -6,10 +6,21 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import DialogActions from '@material-ui/core/DialogActions'
 import Button from '@material-ui/core/Button'
 
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
 const MenuCourse = ({ anchorEl, isMenuOpen, menuId, handleMenuClose }) => {
 
     const [isDialogDeleteOpen, setisDialogDeleteOpen] = useState(false)
+    const [snackbar, setSnackbar] = useState({type: 'success', message: '', open: false})
+
+    const openSB = (type, message) => {
+        setSnackbar({ type, message, open: true })
+    }
+
+    const closeSB = () => {
+        setSnackbar({ ...snackbar, open: false })
+    }
 
     const deleteCourse = () => {
         
@@ -23,6 +34,7 @@ const MenuCourse = ({ anchorEl, isMenuOpen, menuId, handleMenuClose }) => {
             });
             console.log(filesIds)
             await fetchDeleteAllPublicationsFiles(filesIds)
+            openSB('success', 'El curso ha sido eliminado . Pulsa (F5) ')
         }
 
         deletingCourses()
@@ -94,6 +106,11 @@ const MenuCourse = ({ anchorEl, isMenuOpen, menuId, handleMenuClose }) => {
             >
                 <MenuItem onClick={openDialogDelete}> Eliminar curso </MenuItem>
             </Menu>
+            <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={closeSB} >
+                <MuiAlert onClose={closeSB} severity={snackbar.type} elevation={6} variant="filled">
+                    {snackbar.message}
+                </MuiAlert>
+            </Snackbar>
         </div>
 
     )

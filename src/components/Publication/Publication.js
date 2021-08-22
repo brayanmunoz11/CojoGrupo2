@@ -9,6 +9,9 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import PublicationInput from './PublicationInput'
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+
 const Publication = ({ p, onDelete, viewControls }) => {
 
     const [openEdit, setOpenEdit] = useState(false);
@@ -16,6 +19,16 @@ const Publication = ({ p, onDelete, viewControls }) => {
     const [publication, setPublication] = useState(p);
     const [publicationContent, setPublicationContent] = useState(p.content)
     const [publicationfiles, setpublicationFiles] = useState([])
+
+    const [snackbar, setSnackbar] = useState({ type: 'success', message: '', open: false })
+
+    const openSB = (type, message) => {
+        setSnackbar({ type, message, open: true })
+    }
+
+    const closeSB = () => {
+        setSnackbar({ ...snackbar, open: false })
+    }
 
     const handleClickOpenEdit = () => {
         setOpenEdit(true);
@@ -34,7 +47,7 @@ const Publication = ({ p, onDelete, viewControls }) => {
     };
 
     const handleEdit = (newValue) => {
-        console.log(newValue)
+
         fetch(`https://colesroomapp.herokuapp.com/api/publications/${publication._id}`, {
             method: 'PUT',
             headers: {
@@ -52,26 +65,30 @@ const Publication = ({ p, onDelete, viewControls }) => {
                 setOpenEdit(false)
                 setOpenDelete(false)
                 setPublicationContent(newValue.content)
-                
+                openSB('success', 'Publicación actualizada! ')
             })
             .catch(err => {
+                openSB('error', err)
                 console.log(err);
             });
     };
 
     const handleDelete = () => {
+        console.log("DELETE ")
         fetch(`https://colesroomapp.herokuapp.com/api/publications/${publication._id}`, {
             method: 'DELETE'
         })
             .then(res => res.json())
             .then(json => {
-                setOpenEdit(false);
-                setOpenDelete(false);
+                setOpenEdit(false)
+                setOpenDelete(false)
                 onDelete(publication._id)
+                openSB('success', 'Publicación eliminada! ')
             })
             .catch(err => {
+                openSB('error', err)
                 console.log(err);
-            });        
+            });
 
         fetch(`https://colesroomapp.herokuapp.com/file/deleteAll`, {
             method: 'DELETE',
@@ -84,6 +101,13 @@ const Publication = ({ p, onDelete, viewControls }) => {
             })
 
         })
+        .then(json => {            
+            openSB('success', 'Publicación eliminada! ')
+        })
+        .catch(err => {
+            openSB('error', err)
+            console.log(err);
+        });
     };
 
     useEffect(() => {
@@ -100,13 +124,14 @@ const Publication = ({ p, onDelete, viewControls }) => {
             },
         })
             .then(res => res.json())
-            .then(data => {                
-                if (data) {                    
+            .then(data => {
+                if (data) {
                     setpublicationFiles(data)
                 }
             })
             .catch(err => {
                 console.log(err);
+                openSB('error', err)
             });
 
     }, [p])
@@ -121,10 +146,19 @@ const Publication = ({ p, onDelete, viewControls }) => {
             },
 
         })
-            
+            .then(res => res.json())
+            .then(json => {
+                if (json) {
+                    openSB('success', 'Archivo eliminado! ')
+                }
+            }
+            )
+            .catch(err => {
+                openSB('error', err)
+            })
     }
 
-    const sendFiles = (f) => {       
+    const sendFiles = (f) => {
         setpublicationFiles(f)
     }
 
@@ -140,8 +174,8 @@ const Publication = ({ p, onDelete, viewControls }) => {
                             <PublicationInput handleCancel={handleCloseEdit}
                                 handleSubmit={handleEdit}
                                 filesDefault={publicationfiles}
-                                valueDefault={publicationContent}       
-                                sendFiles={sendFiles}                         
+                                valueDefault={publicationContent}
+                                sendFiles={sendFiles}
                             />
                         </DialogContent>
                     </Dialog>
@@ -172,7 +206,7 @@ const Publication = ({ p, onDelete, viewControls }) => {
                     </div>
                 </div>
             }
-            
+
             <div className="publication__content">
                 {publicationContent}
             </div>
@@ -190,6 +224,11 @@ const Publication = ({ p, onDelete, viewControls }) => {
                     </div>
                 )}
             </div>
+            <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={closeSB} >
+                <MuiAlert onClose={closeSB} severity={snackbar.type} elevation={6} variant="filled">
+                    {snackbar.message}
+                </MuiAlert>
+            </Snackbar>
         </div>
     )
 }

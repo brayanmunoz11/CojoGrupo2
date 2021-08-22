@@ -1,4 +1,4 @@
-import React , { useState }from 'react'
+import React, { useState } from 'react'
 
 import { Link, Redirect } from 'react-router-dom'
 import '../../utils.css'
@@ -7,9 +7,12 @@ import { useDispatch } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { actionCreators } from '../../redux/index.js'
 
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+
 const Register = () => {
   const [logeado, setlogeado] = useState(false)
-  
+  const [error, setError] = useState("")
   const dispatch = useDispatch()
   const { setUser } = bindActionCreators(actionCreators, dispatch)
   const validar = (e) => {
@@ -25,7 +28,7 @@ const Register = () => {
     e.preventDefault()
     const form = e.target
 
-    const data = {      
+    const data = {
       "name": form.name.value,
       "surname": form.surname.value,
       "email": form.email.value,
@@ -41,11 +44,18 @@ const Register = () => {
       }
     })
       .then(res => res.json())
-      .then(d => {        
-        setlogeado(true);          
-        sessionStorage.setItem("user", d.id)  
-        setUser(d.id)        
-      }).catch(err =>  'Hubo un problema: '.err);     
+      .then(d => {
+        if (d.id) {
+          setlogeado(true);
+          sessionStorage.setItem("user", d.id)
+          setUser(d.id)
+        }
+        else {
+          openSB()
+          setError(d.error)
+        }        
+        
+      }).catch(err => 'Hubo un problema: '.err);
 
   }
 
@@ -55,10 +65,10 @@ const Register = () => {
     const { value } = evento.target;
     let regex = new RegExp("^[a-zA-Z ]+$");
 
-    if (regex.test(value)) {     
+    if (regex.test(value)) {
       setcambio(value)
     }
-    if(value===""){
+    if (value === "") {
       setcambio("")
     }
   }
@@ -68,12 +78,22 @@ const Register = () => {
     const { value } = evento.target;
     let regex = new RegExp("^[a-zA-Z ]+$");
 
-    if (regex.test(value)) {     
+    if (regex.test(value)) {
       setcambio2(value)
     }
-    if(value===""){
+    if (value === "") {
       setcambio2("")
     }
+  }
+
+  const [SBOpen, setSBOpen] = useState(false)
+
+  const openSB = () => {
+    setSBOpen(true)
+  }
+
+  const closeSB = () => {
+    setSBOpen(false)
   }
 
 
@@ -110,7 +130,41 @@ const Register = () => {
      </div>
    </div>
     </div>   
-    
+        {
+          logeado &&
+          <Redirect to="/" />
+        }
+
+        <h2 className="ax-form__title"> Registrate </h2>
+        <form className="ax-form__form" id="form" onSubmit={registration}>
+          <div className="ax-form__input">
+            <p> Nombres: </p>
+            <input name="name" type="text" value={cambio} onChange={handleChangeInput} placeholder="Ingrese Nombre Completo" required />
+          </div>
+          <div className="ax-form__input">
+            <p> Apellidos: </p>
+            <input name="surname" type="text" value={cambio2} onChange={handleChangeInput2} placeholder="Ingrese Nombre Completo" required />
+          </div>
+          <div className="ax-form__input">
+            <p> Correo Electr&oacute;nico: </p>
+            <input name="email" type="email" placeholder="Introduce tu correo electrónico aquí..." required />
+          </div>
+          <div className="ax-form__input">
+            <p> Contraseña: </p>
+            <input name="password" type="password" placeholder="Ingrese su Contraseña" required />
+          </div>
+          <input type="submit" value="Ingresar" />
+        </form>
+        <div className="ax-form__utils">
+          <Link to="/login"> ¿Ya tienes una cuenta? </Link>
+        </div>
+      </div>
+      <Snackbar open={SBOpen} autoHideDuration={6000} onClose={closeSB}>
+        <MuiAlert onClose={closeSB} severity="error" elevation={6} variant="filled">
+          {error}
+        </MuiAlert>
+      </Snackbar>
+    </div>
   )
 }
 
