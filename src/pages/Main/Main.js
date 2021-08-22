@@ -17,6 +17,7 @@ const Main = () => {
   const [limitCourses, setLimitCourses] = useState(8)
   const [courses, setCourses] = useState([])
   const [coursesToShow, setcoursesToShow] = useState([])
+  const [loadingShowMore, setLoadingShowMore] = useState(false)
 
   const container = (maxwidth) => {
     return {
@@ -28,6 +29,7 @@ const Main = () => {
   }
 
   const showMore = () => {
+    setLoadingShowMore(true)
     let limit = limitCourses
     setLimitCourses(limit + 8)
   }
@@ -45,6 +47,7 @@ const Main = () => {
       setCourses(coursesFromDB)
       setcoursesToShow(coursesFromDB.slice(0, limitCourses))
       setLoading(false)
+      setLoadingShowMore(false)
     }    
 
     getCourses()
@@ -81,12 +84,20 @@ const Main = () => {
         : <CourseContainer coursesList={coursesToShow}></CourseContainer>
       }
       {
-        courses.length > limitCourses &&
-        <Button variant="contained" size="medium" color="secondary" onClick={showMore} className={classes.margin} endIcon={<AddIcon />}>
+        courses.length > limitCourses &&             
+        <Button 
+          variant="contained" 
+          disabled={loadingShowMore ? "disabled" : ""} 
+          size="medium"
+          color="secondary" 
+          onClick={showMore} 
+          className={classes.margin} 
+          endIcon={<AddIcon />}>
           Ver más cursos
         </Button>
+        
       }
- 
+      
       <hr></hr>
       <Typography variant="h3" gutterBottom>
         Enseña lo que sabes 

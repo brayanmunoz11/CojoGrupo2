@@ -10,7 +10,13 @@ const CreateTask = () => {
     const [date, setTime] = useState("")
     const [files, setFiles] = useState([]);
     const [filesID, setFilesID] = useState([]);
-
+    const validarCampos = (e) => {
+        var nom=  document.getElementById("nombre").value.replace(/\s+/g, '')
+        var ap=  document.getElementById("des").value.replace(/\s+/g, '')
+        if(nom===""||ap===""){
+          alert("Rellene todos los campos!!");
+        }
+      };
     let history = useHistory();
     const CrearTarea = (e) => {
         e.preventDefault();
@@ -55,6 +61,7 @@ const CreateTask = () => {
 
     const [hourError, sethourError] = useState("")
     const [disabled, setdisabled] = useState("")
+    
     const handleChangeInput = evento => {
         const { value } = evento.target;
         var dateTime = require('node-datetime');
@@ -91,7 +98,7 @@ const CreateTask = () => {
                 <Form className="Form" onSubmit={CrearTarea}>
                     <Form.Group controlId="exampleForm.ControlSelect1">
                         <Form.Label>Nombre de la Tarea</Form.Label>
-                        <Form.Control size="lg" name="title" type="text" placeholder="Nombre de la Tarea" onChange={handleChangeInput}/>
+                        <Form.Control id="nombre" size="lg" name="title" type="text" placeholder="Nombre de la Tarea" />
                     </Form.Group>
                     <br></br>
                     <Form.Group controlId="exampleForm.ControlTextarea1">
@@ -113,7 +120,7 @@ const CreateTask = () => {
                             </div>
                         </div>
                     </Form.Group>
-                    <Button variant="success" type="submit">
+                    <Button variant="success" type="submit"onClick={validarCampos}>
                         Crear Tarea
                     </Button>
                 </Form>
