@@ -129,12 +129,11 @@ const Register = () => {
        <Link to="/login"> ¿Ya tienes una cuenta? </Link>
      </div>
    </div>
-    </div>   
         {
           logeado &&
           <Redirect to="/" />
         }
-
+      <div>
         <h2 className="ax-form__title"> Registrate </h2>
         <form className="ax-form__form" id="form" onSubmit={registration}>
           <div className="ax-form__input">
