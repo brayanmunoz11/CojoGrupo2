@@ -67,7 +67,7 @@ export default function SimpleModal() {
       teacherID: sessionStorage.getItem('user')
     }
     
-    fetch('https://colesroomapp.herokuapp.com/api/add', {
+    fetch('https://colesroomgrupo.herokuapp.com/api/add', {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {

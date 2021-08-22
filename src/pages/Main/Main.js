@@ -35,7 +35,7 @@ const Main = () => {
   }
 
   const fetchCourses = async () => {
-    const res = await fetch('https://colesroomapp.herokuapp.com/api/courses')   
+    const res = await fetch('https://colesroomgrupo.herokuapp.com/api/courses')   
     
     return res.json()
   }

@@ -46,7 +46,7 @@ const PublicationInput = ({ handleCancel, handleSubmit, filesDefault, valueDefau
                     size: input.files[0].size,
                     type: input.files[0].type,
                 }
-                fetch('https://colesroomapp.herokuapp.com/upload', {
+                fetch('https://colesroomgrupo.herokuapp.com/upload', {
                     method: 'POST',
                     body: JSON.stringify(fileObj),
                     headers: {
@@ -87,7 +87,7 @@ const PublicationInput = ({ handleCancel, handleSubmit, filesDefault, valueDefau
     const handleDeleteFile = (fileID) => {
         setFiles(files.filter(file => file._id !== fileID))
         setFilesID(filesID.filter(fileid => fileid !== fileID))
-        fetch(`https://colesroomapp.herokuapp.com/file/${fileID}/delete`, {
+        fetch(`https://colesroomgrupo.herokuapp.com/file/${fileID}/delete`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',

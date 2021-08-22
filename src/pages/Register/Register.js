@@ -35,7 +35,7 @@ const Register = () => {
       "password": form.password.value
     }
 
-    fetch('https://colesroomapp.herokuapp.com/register', {
+    fetch('https://colesroomgrupo.herokuapp.com/register', {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {

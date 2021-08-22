@@ -26,7 +26,7 @@ const CreateTask = () => {
             console.log(form.title.value, form.description.value)
             setcamposInvalidos(true)
         } else {
-            fetch('https://colesroomapp.herokuapp.com/api/tasks', {
+            fetch('https://colesroomgrupo.herokuapp.com/api/tasks', {
                 method: 'POST',
                 body: JSON.stringify(data),
                 headers: {

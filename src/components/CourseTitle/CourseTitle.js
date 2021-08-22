@@ -148,7 +148,7 @@ const CourseTitle = ({ name, description, date, backgroundImage, category, topic
 
 
     const salirseCurso = async () => {
-        await fetch(`https://colesroomapp.herokuapp.com/user/deleteuser`, {
+        await fetch(`https://colesroomgrupo.herokuapp.com/user/deleteuser`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
@@ -172,7 +172,7 @@ const CourseTitle = ({ name, description, date, backgroundImage, category, topic
     const saveChanges = () => {
         if (newTitle !== '' && newContent !== '') {
             setediting(false)
-            fetch(`https://colesroomapp.herokuapp.com/api/courses/${topic}`, {
+            fetch(`https://colesroomgrupo.herokuapp.com/api/courses/${topic}`, {
                 method: 'PUT',
                 headers: {
                     'Accept': 'application/json',

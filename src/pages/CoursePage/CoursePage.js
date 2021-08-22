@@ -27,17 +27,17 @@ const CoursePage = () => {
   useEffect(() => {
 
     const fetchPublications = async () => {
-      const res = await fetch(`https://colesroomapp.herokuapp.com/api/publications/${topic}`)
+      const res = await fetch(`https://colesroomgrupo.herokuapp.com/api/publications/${topic}`)
       return res.json()
     }
   
     const fetchCourse = async () => {
-      const res = await fetch(`https://colesroomapp.herokuapp.com/api/courses/${topic}`)
+      const res = await fetch(`https://colesroomgrupo.herokuapp.com/api/courses/${topic}`)
       return res.json()
     }
   
     const fetchTeacher = async (teacher_id) => {
-      const res = await fetch(`https://colesroomapp.herokuapp.com/teacher/${teacher_id}`)
+      const res = await fetch(`https://colesroomgrupo.herokuapp.com/teacher/${teacher_id}`)
       return res.json()     
     }
 
@@ -73,7 +73,7 @@ const CoursePage = () => {
   const handleSubmit = (value) => {
     value.course_id = topic
 
-    fetch('https://colesroomapp.herokuapp.com/api/publications', {
+    fetch('https://colesroomgrupo.herokuapp.com/api/publications', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

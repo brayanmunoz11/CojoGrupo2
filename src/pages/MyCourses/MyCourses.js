@@ -19,13 +19,13 @@ const MyCourses = () => {
     }
 
     const fetchCourseCreated = async () => {
-        const res = await fetch(`https://colesroomapp.herokuapp.com/api/courses/created/${sessionStorage.getItem("user")}`)
+        const res = await fetch(`https://colesroomgrupo.herokuapp.com/api/courses/created/${sessionStorage.getItem("user")}`)
         return res.json()        
     }
 
 
     const fetchCoursesJoined = async () => {
-        const res = await fetch(`https://colesroomapp.herokuapp.com/api/courses/join/${sessionStorage.getItem("user")}`)
+        const res = await fetch(`https://colesroomgrupo.herokuapp.com/api/courses/join/${sessionStorage.getItem("user")}`)
         return res.json()
     }
 

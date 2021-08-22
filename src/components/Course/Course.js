@@ -85,7 +85,7 @@ const Course = ({ curso_id, name, category, teacher_id, description, image, date
             userID: sessionStorage.getItem("user"),
             courseID: curso_id
         }
-        fetch('https://colesroomapp.herokuapp.com/api/join', {
+        fetch('https://colesroomgrupo.herokuapp.com/api/join', {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
@@ -138,7 +138,7 @@ const Course = ({ curso_id, name, category, teacher_id, description, image, date
 
     useEffect(() => {
         const seeCoursesJoin = async () => {
-            const res = await fetch(`https://colesroomapp.herokuapp.com/api/course/join/${sessionStorage.getItem("user")}`)
+            const res = await fetch(`https://colesroomgrupo.herokuapp.com/api/course/join/${sessionStorage.getItem("user")}`)
             const data = await res.json()
             for (const cursoID of data) {
                 if (cursoID === curso_id) {

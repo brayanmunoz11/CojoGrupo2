@@ -37,7 +37,7 @@ const CreateCourse = (props) => {
 
     data.user_id = sessionStorage.getItem("user")
 
-    await fetch('https://colesroomapp.herokuapp.com/api/CreateCourse', {
+    await fetch('https://colesroomgrupo.herokuapp.com/api/CreateCourse', {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {
