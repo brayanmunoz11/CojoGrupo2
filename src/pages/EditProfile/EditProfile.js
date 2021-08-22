@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 import "./EditProfile.css";
 import {
   Card,
@@ -11,6 +11,7 @@ import {
   TextField,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { Redirect } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: { backgroundColor: "grey" },
@@ -18,20 +19,30 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const fetchMyUser = async () => {
-  const res = await fetch(`https://colesroomapp.herokuapp.com/teacher/${sessionStorage.getItem("user")}`);
+  const res = await fetch(
+    `https://colesroomapp.herokuapp.com/teacher/${sessionStorage.getItem(
+      "user"
+    )}`
+  );
   return res.json();
 };
 
-const EditProfile = () => {
+const EditProfile = memo(() => {
+  const [edited, setEdited] = useState(false);
+  const [alert, setAlert] = useState(false);
   const [user, setUser] = useState("");
-  const [name, setName] = useState();
-  const [surname, setSurname] = useState();
-  const [email, setEmail] = useState();
-  const [phone, setPhone] = useState();
+  const [name, setName] = useState("");
+  const [surname, setSurname] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   useEffect(() => {
     const getUser = async () => {
       await fetchMyUser().then((a) => {
         setUser(a);
+        setName(a.name);
+        setSurname(a.surname);
+        setEmail(a.email);
+        setPhone(a.phone);
       });
     };
     getUser();
@@ -52,100 +63,140 @@ const EditProfile = () => {
   const phoneChangeHandler = (e) => {
     setPhone(e.target.value);
   };
-  const submitHandler = () => {
-    if (name !== "" && name !== user.name) {
+  const submitHandler = (e) => {
+    e.preventDefault();
+    const regName = /^[a-zA-Z ]{2,30}$/;
+    if (!regName.test(name)) {
+      setAlert("Nombre inválido");
+      return;
     }
-    if (surname !== "" && name !== user.surname) {
+    if (!regName.test(surname)) {
+      setAlert("Apellido inválido");
+      return;
     }
-    if (email !== "" && name !== user.email) {
+    const regPhone = /^\d{9}$/;
+    if (!regPhone.test(phone) || phone[0] !== "9") {
+      setAlert("Teléfono inválido");
+      return;
     }
-    if (phone !== "" && name !== user.phone) {
-    }
+    fetch(`/user/updateuser/${sessionStorage.getItem("user")}`, {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: name,
+        surname: surname,
+        email: email,
+        phone: phone,
+      }),
+    })
+      .then((response) => {
+        setEdited(true);
+        return response.json();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
-  const scapeHandler = () => { };
-  const deleteHandler = () => { };
+  const scapeHandler = () => {
+    setEdited(true);
+  };
   return (
     <main className={classes.root}>
+      {edited && <Redirect to="/profile" />}
       <Card className={classes.card}>
-        <CardHeader
-          avatar={<Avatar src="/broken-image.jpg" />}
-          title={`${user.name} ${user.surname}`}
-        />
-        <CardContent>
-          <span>Deje vacios aquellos campos que no piensa cambiar</span>
-          <Grid container spacing={3} alignItems="flex-end">
-            <Grid item>
-              <aside>
-                <span>Nombre</span>
-              </aside>
+        <form onSubmit={submitHandler}>
+          <CardHeader
+            avatar={<Avatar src="/broken-image.jpg" />}
+            title={`${user.name} ${user.surname}`}
+          />
+          <CardContent>
+            <Grid container spacing={3} alignItems="flex-end">
+              <Grid item>
+                <aside>
+                  <span>Nombre</span>
+                </aside>
+              </Grid>
+              <Grid item>
+                <TextField
+                  id="name"
+                  type="text"
+                  value={name}
+                  onChange={nameChangeHandler}
+                />
+              </Grid>
             </Grid>
-            <Grid item>
-              <TextField
-                id="name"
-                type="text"
-                placeholder="Nombre"
-                onChange={nameChangeHandler}
-              />
+            <Grid container spacing={3} alignItems="flex-end">
+              <Grid item>
+                <aside>
+                  <span>Apellido</span>
+                </aside>
+              </Grid>
+              <Grid item>
+                <TextField
+                  id="surname"
+                  type="text"
+                  value={surname}
+                  onChange={surnameChangeHandler}
+                />
+              </Grid>
             </Grid>
-          </Grid>
-          <Grid container spacing={3} alignItems="flex-end">
-            <Grid item>
-              <aside>
-                <span>Apellido</span>
-              </aside>
+            <Grid container spacing={5} alignItems="flex-end">
+              <Grid item>
+                <aside>
+                  <span>E-mail</span>
+                </aside>
+              </Grid>
+              <Grid item>
+                <TextField
+                  required
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={emailChangeHandler}
+                />
+              </Grid>
             </Grid>
-            <Grid item>
-              <TextField
-                id="surname"
-                type="text"
-                placeholder="Apellido"
-                onChange={surnameChangeHandler}
-              />
+            <Grid container spacing={3} alignItems="flex-end">
+              <Grid item>
+                <aside>
+                  <span>Teléfono</span>
+                </aside>
+              </Grid>
+              <Grid item>
+                <TextField
+                  id="phone"
+                  type="tel"
+                  value={phone}
+                  onChange={phoneChangeHandler}
+                />
+              </Grid>
             </Grid>
-          </Grid>
-          <Grid container spacing={5} alignItems="flex-end">
-            <Grid item>
-              <aside>
-                <span>E-mail</span>
-              </aside>
-            </Grid>
-            <Grid item>
-              <TextField
-                id="email"
-                type="email"
-                placeholder="example@example.com"
-                onChange={emailChangeHandler}
-              />
-            </Grid>
-          </Grid>
-          <Grid container spacing={3} alignItems="flex-end">
-            <Grid item>
-              <aside>
-                <span>Teléfono</span>
-              </aside>
-            </Grid>
-            <Grid item>
-              <TextField id="phone" type="tel" onChange={phoneChangeHandler} />
-            </Grid>
-          </Grid>
-        </CardContent>
-        <CardActions>
-          <Button variant="outlined" color="primary" onClick={submitHandler}>
-            Confirmar
-          </Button>
-          <Button variant="contained" color="secondary" onClick={scapeHandler}>
-            Volver
-          </Button>
-          <div>
-            <span>¿Desea eliminar su cuenta?</span>
-            <Button color="secondary" onClick={deleteHandler}>
-              Eliminar
+            <br />
+            {alert && (
+              <p>
+                <strong>{alert}</strong>
+              </p>
+            )}
+          </CardContent>
+          <CardActions>
+            <Button variant="outlined" color="primary" type="submit">
+              Confirmar
             </Button>
-          </div>
-        </CardActions>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={scapeHandler}
+            >
+              Volver
+            </Button>
+          </CardActions>
+        </form>
       </Card>
     </main>
   );
-};
+});
 
 export default EditProfile;

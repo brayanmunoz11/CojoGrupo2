@@ -18,6 +18,9 @@ import image2 from '../../imgs/CourseBackground2.jpg'
 import image3 from '../../imgs/CourseBackground3.jpg'
 import './Course.css'
 
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+
 const Course = ({ curso_id, name, category, teacher_id, description, image, datecreate, viewDelete }) => {
     var imageUrl = ""
     const [dateformat, setdateformat] = useState('')
@@ -26,6 +29,16 @@ const Course = ({ curso_id, name, category, teacher_id, description, image, date
 
     const [textButton, setTextButton] = useState('')
     const [colorButton, setcolorButton] = useState('primary')
+
+    const [snackbar, setSnackbar] = useState({type: 'success', message: '', open: false})
+
+    const openSB = (type, message) => {
+        setSnackbar({ type, message, open: true })
+    }
+
+    const closeSB = () => {
+        setSnackbar({ ...snackbar, open: false })
+    }
 
     const isMenuOpen = Boolean(anchorMenuCourse)
     const useStyles = makeStyles((theme) => ({
@@ -81,6 +94,11 @@ const Course = ({ curso_id, name, category, teacher_id, description, image, date
             }
         })
             .then(res => res.json())
+            .then(res => {
+                if (res) {
+                    openSB('success', 'Te has unido al curso exitosamente')
+                }
+            })
             .catch(err => 'Hubo un problema');
         history.push(`mycourses/${curso_id}`);
         setClick(true);
@@ -220,6 +238,11 @@ const Course = ({ curso_id, name, category, teacher_id, description, image, date
                 </IconButton>
             </CardActions>
             {<MenuCourse anchorEl={anchorMenuCourse} menuId={curso_id} isMenuOpen={isMenuOpen} handleMenuClose={closeMenuCourse} />}
+            <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={closeSB} >
+                <MuiAlert onClose={closeSB} severity={snackbar.type} elevation={6} variant="filled">
+                    {snackbar.message}
+                </MuiAlert>
+            </Snackbar>
         </Card>
     );
 };

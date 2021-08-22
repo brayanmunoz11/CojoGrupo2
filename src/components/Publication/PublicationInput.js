@@ -6,6 +6,13 @@ import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 
 const PublicationInput = ({ handleCancel, handleSubmit, filesDefault, valueDefault, sendFiles }) => {
 
+    const validar = (e) => {
+        var nom=  document.getElementById("filled-multiline-flexible").value.replace(/\s+/g, '')
+        if(nom===""){
+          alert("Rellene los campos adecuadamente!!!");
+        }
+      };
+
     const [files, setFiles] = useState([]);
     const [value, setValue] = useState('');
     const [disabledBtn, setDisabledBtn] = useState(true)
@@ -167,6 +174,7 @@ const PublicationInput = ({ handleCancel, handleSubmit, filesDefault, valueDefau
                             type: 1,
                             route: filesID
                         });
+                        validar();
                         cleanInput();
                         handleCancel();
                         sendFiles(files);

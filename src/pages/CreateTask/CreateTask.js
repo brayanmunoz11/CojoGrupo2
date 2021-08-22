@@ -1,65 +1,67 @@
-import React, {useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import '../../utils.css'
 import { Form, Button, FormControl } from 'react-bootstrap';
 import "./CreateTask.css"
 import { useHistory } from "react-router-dom";
-
+import { Alert } from "@material-ui/lab";
 
 const CreateTask = () => {
 
     const [date, setTime] = useState("")
     const [files, setFiles] = useState([]);
     const [filesID, setFilesID] = useState([]);
-
+    const [camposInvalidos, setcamposInvalidos] = useState(false)
     let history = useHistory();
+
     const CrearTarea = (e) => {
         e.preventDefault();
         const form = e.target;
-
         const data = {
-            // nombre: form.title.value,
-            content: form.description.value,
-            type:0,
             course_id: sessionStorage.getItem("IDCourse"),
-            route:[]
-            //date: form.date.value,
-            //file: form.File.value,
+            content: "TAREA: "+ form.title.value+" -> "+ form.description.value,
+            type: 0
         };
-
-        fetch('https://colesroomapp.herokuapp.com/api/tasks', {
-            method: 'POST',
-            body: JSON.stringify(data),
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(response => {
-                if (response.status === 200) {
-                    return response.json()
-                }
-                else {
-                    console.log('Error: ' + response.status + ' ' + response.statusText)
+        console.log(form.title.value, form.description.value)
+        if (form.title.value === "" || form.description.value === "") {
+            console.log(form.title.value, form.description.value)
+            setcamposInvalidos(true)
+        } else {
+            fetch('https://colesroomapp.herokuapp.com/api/tasks', {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
                 }
             })
-            .then(json => {
-                if (json) {
-                    setFiles([...files, json.file])
-                    setFilesID([...filesID, json.fileID])
-                }
-            })
-            .catch(error => {
-                console.log('Error: ' + error)
-            })
-        let topic =sessionStorage.getItem("IDCourse")            
-        sessionStorage.removeItem("IDCourse")
-        history.push(`/mycourses/${topic}`);
+                .then(response => {
+                    if (response.status === 200) {
+                        return response.json()
+                    }
+                    else {
+                        console.log('Error: ' + response.status + ' ' + response.statusText)
+                    }
+                })
+                .then(json => {
+                    if (json) {
+                        setFiles([...files, json.file])
+                        setFilesID([...filesID, json.fileID])
+                    }
+                })
+                .catch(error => {
+                    console.log('Error: ' + error)
+                })
+            let topic = sessionStorage.getItem("IDCourse")
+            sessionStorage.removeItem("IDCourse")
+            history.push(`/mycourses/${topic}`);
+        }
     }
 
     useEffect(() => {
         var dateTime = require('node-datetime');
         var dt = dateTime.create();
         var formatted = dt.format('Y-m-dTH:M:S');
+        console.log(formatted)
         setTime(formatted)
     }, [])
 
@@ -71,12 +73,12 @@ const CreateTask = () => {
                 <Form className="Form" onSubmit={CrearTarea}>
                     <Form.Group controlId="exampleForm.ControlSelect1">
                         <Form.Label>Nombre de la Tarea</Form.Label>
-                        <Form.Control size="lg" name="title" type="text" placeholder="Nombre de la Tarea" />
+                        <Form.Control id="nombre" size="lg" name="title" type="text" placeholder="Nombre de la Tarea" />
                     </Form.Group>
                     <br></br>
                     <Form.Group controlId="exampleForm.ControlTextarea1">
                         <Form.Label>Descripcion de la tarea</Form.Label>
-                        <FormControl type="text" name="description" as="textarea" rows="3" style={{ resize: "none" }} />
+                        <FormControl type="text" name="description" as="textarea" rows="3" style={{ resize: "none" }}/>
                     </Form.Group>
                     <br></br>
                     <Form.Group>
@@ -89,7 +91,7 @@ const CreateTask = () => {
                         <div className="contenedor">
                             <div className="center">
                                 <input type="datetime-local" defaultValue={date}
-                                    min={date} name="date" />
+                                    min={date} name="date"/>
                             </div>
                         </div>
                     </Form.Group>
@@ -97,8 +99,15 @@ const CreateTask = () => {
                         Crear Tarea
                     </Button>
                 </Form>
-                <br></br>
-
+                {
+                    camposInvalidos
+                        ? <div>
+                            <br></br>
+                            <Alert severity="error">Campos Vacios</Alert>
+                        </div>
+                        :
+                        <br></br>
+                }
             </div>
         </div>
     );

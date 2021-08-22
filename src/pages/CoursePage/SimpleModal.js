@@ -1,14 +1,15 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import "../../utils.css"
-function rand() {
-  return Math.round(Math.random() * 20) - 10;
-}
+
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+import { SortByAlpha } from '@material-ui/icons';
 
 function getModalStyle() {
-  const top = 50 + rand();
-  const left = 50 + rand();
+  const top = 50 ;
+  const left = 50 ;
 
   return {
     top: `${top}%`,
@@ -29,31 +30,44 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SimpleModal() {
+  const validaremail = (e) => {
+    var nom=  document.getElementById("email").value.replace(/\s+/g, '')
+    if(nom===""){
+      alert("Digite un email válido!!");
+    }
+  };
   var desicion = ''
   const classes = useStyles();
   // getModalStyle is not a pure function, we roll the style only on the first render
   const [modalStyle] = React.useState(getModalStyle);
   const [open, setOpen] = React.useState(false);
 
+  const [snackbar, setSnackbar] = useState({ type: 'success', message: '', open: false })
+
+    const openSB = (type, message) => {
+        setSnackbar({ type, message, open: true })        
+    }
+
+    const closeSB = () => {
+        setSnackbar({ ...snackbar, open: false })       
+    }
+
   const handleOpen = () => {
-
-
     //const [course, setCourse] = useState({})
     setOpen(true);
   };
-  const addStudent = (ev) => {
+  const addStudent = () => {
     let Doc = document.getElementById("email").value;
-    console.log(Doc)
+    
     var URLactual = window.location.href;
     desicion = URLactual.substring(34)
     const data = {
       Email: Doc,
-      courseID: desicion
+      courseID: desicion,
+      teacherID: sessionStorage.getItem('user')
     }
-    console.log(desicion)
-    console.log(data.Email);
-    fetch('/api/add', {
-
+    
+    fetch('https://colesroomapp.herokuapp.com/api/add', {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {
@@ -61,26 +75,26 @@ export default function SimpleModal() {
         'Content-Type': 'application/json'
       }
     })
-      .then(res => console.log(res.status)
-
-      )
-      .catch(err => 'Hubo un problema');
+      .then(res => res.json())
+      .then(res => {     
+        console.log(res)           
+        if (res.status === "OK") {
+          openSB("success", `"Estudiante ${data.Email} añadido"`)
+          setOpen(false)
+        }
+        else {
+          openSB("error", `${res.error} . \nCorreo Electrónico introducido : ${data.Email} `)
+        }
+      })
+      .catch(err => openSB("error", err));
 
   };
 
 
   const handleClose = (e) => {
+    validaremail()
     addStudent();
-
-
-    setOpen(false);
     const id_curso = desicion
-
-      ;
-    console.log("este es el codigo de curso");
-    console.log(id_curso);
-    console.log("Registrar Alumno");
-
   };
 
   const body = (
@@ -112,6 +126,11 @@ export default function SimpleModal() {
       >
         {body}
       </Modal>
+      <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={closeSB} >
+        <MuiAlert onClose={closeSB} severity={snackbar.type} elevation={6} variant="filled">
+          {snackbar.message}
+        </MuiAlert>
+      </Snackbar>
     </div>
   );
 }

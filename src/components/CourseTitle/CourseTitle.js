@@ -16,6 +16,8 @@ import FormLabel from '@material-ui/core/FormLabel';
 import Radio from '@material-ui/core/Radio';
 import Button from '@material-ui/core/Button';
 import { useHistory } from 'react-router-dom'
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
 const CourseTitle = ({ name, description, date, backgroundImage, category, topic, teacher_id}) => {
 
@@ -28,6 +30,15 @@ const CourseTitle = ({ name, description, date, backgroundImage, category, topic
 
     const [visibility, setvisibility] = useState(category)
 
+    const [snackbar, setSnackbar] = useState({type: 'success', message: '', open: false})
+
+    const openSB = (type, message) => {
+        setSnackbar({ type, message, open: true })
+    }
+
+    const closeSB = () => {
+        setSnackbar({ ...snackbar, open: false })
+    }
 
     const [fondo, setfondo] = useState(backgroundImage)
     const [background, setbackground] = useState(DefaultBackground1)
@@ -149,6 +160,11 @@ const CourseTitle = ({ name, description, date, backgroundImage, category, topic
             }),
 
         })
+        .then(response => response.json())
+        .then(json => {
+            openSB('success', 'Te haz salido del curso')
+        })
+        
         history.push(`/`);
     }
 
@@ -175,7 +191,7 @@ const CourseTitle = ({ name, description, date, backgroundImage, category, topic
                 })
                 .then(data => {
                     if (data) {
-
+                        openSB('success', 'Datos guardados')
                         setediting(false)
                     }
                 })
@@ -265,7 +281,11 @@ const CourseTitle = ({ name, description, date, backgroundImage, category, topic
                         : null
                 }
             </div>
-
+            <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={closeSB} >
+                <MuiAlert onClose={closeSB} severity={snackbar.type} elevation={6} variant="filled">
+                    {snackbar.message}
+                </MuiAlert>
+            </Snackbar>
         </div>
     )
 }
