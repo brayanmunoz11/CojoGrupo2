@@ -11,6 +11,8 @@ import imgFakePerfil from '../../imgs/fakePerfil.png'
 import "../../utils.css"
 import SimpleModal from './SimpleModal.js';
 
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
 const CoursePage = () => {
   let { topic } = useParams()
@@ -19,6 +21,8 @@ const CoursePage = () => {
   const [course, setCourse] = useState({})
   const [teacher, setTeacher] = useState({})
   const [activeAddPublication, setactiveAddPublication] = useState(false)
+
+  const [snackbar, setSnackbar] = useState({type: 'success', message: '', open: false})
 
   useEffect(() => {
 
@@ -81,9 +85,11 @@ const CoursePage = () => {
         return response.json()
       })
       .then(json => {
+        openSB("success","Se ha creado la publicación.")
         setPublicaciones([...publicaciones, json])
       })
       .catch(error => {
+        openSB("error",error)
         console.log(error)
       })
 
@@ -98,6 +104,15 @@ const CoursePage = () => {
     sessionStorage.setItem("IDCourse",topic)
     setClick(true)
   }
+
+  const openSB = (type, message) => {
+    setSnackbar({type, message, open: true})
+  }
+
+  const closeSB = () => {
+    setSnackbar({...snackbar, open: false})
+  }
+
 
   return (
 
@@ -134,6 +149,11 @@ const CoursePage = () => {
           <PublicationContainer publications={publicaciones} teacherId={course.user_id} />
           : <h2 style={{ marginTop: '1rem', fontStyle: 'italic' }}>No hay publicaciones</h2>
       }
+      <Snackbar open={snackbar.open} autoHideDuration={3000} onClose={closeSB} >
+        <MuiAlert onClose={closeSB} severity={snackbar.type} elevation={6} variant="filled">
+          {snackbar.message}
+        </MuiAlert>
+      </Snackbar>
 
     </div>
   );
