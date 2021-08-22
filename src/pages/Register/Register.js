@@ -15,7 +15,15 @@ const Register = () => {
   const [error, setError] = useState("")
   const dispatch = useDispatch()
   const { setUser } = bindActionCreators(actionCreators, dispatch)
-
+  const validar = (e) => {
+    var email= document.getElementById("email").value.replace(/\s+/g, '')
+    var p= document.getElementById("pss").value.replace(/\s+/g, '')
+    var nom=  document.getElementById("nombre").value.replace(/\s+/g, '')
+    var ap=  document.getElementById("apellido").value.replace(/\s+/g, '')
+    if(email==="" || p===""||nom===""||ap===""){
+      alert("Rellene todos los campos!!");
+    }
+  };
   const registration = e => {
     e.preventDefault()
     const form = e.target
@@ -92,6 +100,36 @@ const Register = () => {
   return (
     <div className="container-form">
       <div className="ax-form-style1">
+     {
+       logeado &&
+       <Redirect to="/" />
+     }
+     
+      <h2 className="ax-form__title"> Registrate </h2>
+     <form className="ax-form__form" id="form" onSubmit={registration}>
+       <div className="ax-form__input">
+         <p> Nombres: </p>
+         <input name="name" id="nombre" type="text" value={cambio} onChange={handleChangeInput} placeholder="Ingrese Nombre Completo" required/>
+       </div>
+       <div className="ax-form__input">
+         <p> Apellidos: </p>
+         <input name="surname" id="apellido" type="text" value={cambio2} onChange={handleChangeInput2} placeholder="Ingrese Nombre Completo" required/>
+       </div>
+       <div className="ax-form__input">
+         <p> Correo Electr&oacute;nico: </p>
+         <input name="email" id="email"type = "email" placeholder="Introduce tu correo electrónico aquí..." required/>
+       </div>
+       <div className="ax-form__input">
+         <p> Contraseña: </p>
+         <input name="password" id="pss" type = "password" placeholder = "Ingrese su Contraseña" required/>
+       </div>
+       <input type="submit" value="Ingresar" onClick={validar}/>
+     </form>
+     <div className="ax-form__utils">
+       <Link to="/login"> ¿Ya tienes una cuenta? </Link>
+     </div>
+   </div>
+    </div>   
         {
           logeado &&
           <Redirect to="/" />
@@ -127,7 +165,6 @@ const Register = () => {
         </MuiAlert>
       </Snackbar>
     </div>
-
   )
 }
 

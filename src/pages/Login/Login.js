@@ -6,6 +6,7 @@ import "./Login.css"
 import { useDispatch } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { actionCreators } from '../../redux/index.js'
+import { LocalConvenienceStoreOutlined } from '@material-ui/icons'
 
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -17,7 +18,14 @@ const Login = () => {
   const [error, seterror] = useState("")
   const dispatch = useDispatch()
   const { setUser } = bindActionCreators(actionCreators, dispatch)
-
+  
+  const validar = (e) => {
+    var email= document.getElementById("email").value.replace(/\s+/g, '')
+    var p= document.getElementById("pss").value.replace(/\s+/g, '')
+    if(email==="" || p===""){
+      alert("Rellene los campos adecuadamente");
+    }
+  };
   const authentication = e => {
     e.preventDefault()
     const form = e.target
@@ -74,11 +82,11 @@ const Login = () => {
         <form className="ax-form__form" onSubmit={authentication}>
           <div className="ax-form__input">
             <p> Correo Electr&oacute;nico: </p>
-            <input type="text" name="email" placeholder="Introduce tu correo electrónico aquí..." />
+            <input type="text"id="email"   name="email" placeholder="Introduce tu correo electrónico aquí..." required/>
           </div>
           <div className="ax-form__input">
             <p> Contraseña: </p>
-            <input type="password" name="password" placeholder="Introduce tu contraseña aquí..." />
+            <input type="password" id="pss"name="password" placeholder="Introduce tu contraseña aquí..." required />
           </div>
           {
             loading 
@@ -87,7 +95,6 @@ const Login = () => {
             :  
             <input type="submit" value="Ingresar"/>
           }
-          
         </form>
         <div className="ax-form__utils">
           <Link to="/register"> ¿No tienes una cuenta? </Link>

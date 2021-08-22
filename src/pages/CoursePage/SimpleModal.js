@@ -30,6 +30,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SimpleModal() {
+  const validaremail = (e) => {
+    var nom=  document.getElementById("email").value.replace(/\s+/g, '')
+    if(nom===""){
+      alert("Digite un email válido!!");
+    }
+  };
   var desicion = ''
   const classes = useStyles();
   // getModalStyle is not a pure function, we roll the style only on the first render
@@ -85,9 +91,9 @@ export default function SimpleModal() {
   };
 
 
-  const handleClose = (e) => {    
-    addStudent()   
-    setOpen(false)
+  const handleClose = (e) => {
+    validaremail()
+    addStudent();
     const id_curso = desicion
   };
 

@@ -10,8 +10,14 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 const CreateCourse = (props) => {
 
   let history = useHistory()
+  const validar = (e) => {
+    var nom=  document.getElementById("nombre").value.replace(/\s+/g, '')
+    var ap=  document.getElementById("des").value.replace(/\s+/g, '')
+    if(nom===""||ap===""){
+      alert("Rellene todos los campos!!");
+    }
+  };
   const [loading, setloading] = useState(false)
-
   const registrarCurso = async (e) => {
     setloading(true)
     e.preventDefault();
