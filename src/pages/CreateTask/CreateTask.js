@@ -1,9 +1,9 @@
-import React, {useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import '../../utils.css'
 import { Form, Button, FormControl } from 'react-bootstrap';
 import "./CreateTask.css"
 import { useHistory } from "react-router-dom";
-
+import { Alert } from "@material-ui/lab";
 
 const CreateTask = () => {
 
@@ -17,16 +17,12 @@ const CreateTask = () => {
         const form = e.target;
 
         const data = {
-            // nombre: form.title.value,
-            content: form.description.value,
-            type:0,
             course_id: sessionStorage.getItem("IDCourse"),
-            route:[]
-            //date: form.date.value,
-            //file: form.File.value,
+            content: form.description.value,
+            type: 0
         };
 
-        fetch('https://colesroomapp.herokuapp.com/api/tasks', {
+        fetch('/api/tasks', {
             method: 'POST',
             body: JSON.stringify(data),
             headers: {
@@ -51,16 +47,40 @@ const CreateTask = () => {
             .catch(error => {
                 console.log('Error: ' + error)
             })
-        let topic =sessionStorage.getItem("IDCourse")            
+        let topic = sessionStorage.getItem("IDCourse")
         sessionStorage.removeItem("IDCourse")
         history.push(`/mycourses/${topic}`);
     }
+
+
+    const [hourError, sethourError] = useState("")
+    const [disabled, setdisabled] = useState("")
+    const handleChangeInput = evento => {
+        const { value } = evento.target;
+        var dateTime = require('node-datetime');
+        var dt = dateTime.create();
+        var formatted = dt.format('Y-m-dTH:M:S');
+        if (value < formatted) {
+            sethourError(true)
+        } else {
+            sethourError(false)
+        }
+
+    }
+
+    const validaciones = e => {
+        
+    }
+
 
     useEffect(() => {
         var dateTime = require('node-datetime');
         var dt = dateTime.create();
         var formatted = dt.format('Y-m-dTH:M:S');
+        console.log(formatted)
         setTime(formatted)
+        sethourError(false)
+        setdisabled(true)
     }, [])
 
 
@@ -71,12 +91,12 @@ const CreateTask = () => {
                 <Form className="Form" onSubmit={CrearTarea}>
                     <Form.Group controlId="exampleForm.ControlSelect1">
                         <Form.Label>Nombre de la Tarea</Form.Label>
-                        <Form.Control size="lg" name="title" type="text" placeholder="Nombre de la Tarea" />
+                        <Form.Control size="lg" name="title" type="text" placeholder="Nombre de la Tarea" onChange={handleChangeInput}/>
                     </Form.Group>
                     <br></br>
                     <Form.Group controlId="exampleForm.ControlTextarea1">
                         <Form.Label>Descripcion de la tarea</Form.Label>
-                        <FormControl type="text" name="description" as="textarea" rows="3" style={{ resize: "none" }} />
+                        <FormControl type="text" name="description" as="textarea" rows="3" style={{ resize: "none" }} onChange={handleChangeInput}/>
                     </Form.Group>
                     <br></br>
                     <Form.Group>
@@ -89,7 +109,7 @@ const CreateTask = () => {
                         <div className="contenedor">
                             <div className="center">
                                 <input type="datetime-local" defaultValue={date}
-                                    min={date} name="date" />
+                                    min={date} name="date" onChange={handleChangeInput} />
                             </div>
                         </div>
                     </Form.Group>
@@ -97,8 +117,14 @@ const CreateTask = () => {
                         Crear Tarea
                     </Button>
                 </Form>
-                <br></br>
-
+                {
+                    hourError
+                        ? <div>
+                            <br></br>
+                            <Alert severity="error">Hora Incorrecta</Alert>
+                        </div>
+                        : <br></br>
+                }
             </div>
         </div>
     );
