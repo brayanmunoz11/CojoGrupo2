@@ -3,15 +3,17 @@ import { Button, ButtonGroup, TextField, makeStyles } from '@material-ui/core'
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import DescriptionIcon from '@material-ui/icons/Description';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-
+const validar = (e) => {
+    var nom=  document.getElementById("filled-multiline-flexible").value.replace(/\s+/g, '')
+    if(nom===""){
+      return false
+    }else{
+        return true
+    }
+  };
 const PublicationInput = ({ handleCancel, handleSubmit, filesDefault, valueDefault, sendFiles }) => {
 
-    const validar = (e) => {
-        var nom=  document.getElementById("filled-multiline-flexible").value.replace(/\s+/g, '')
-        if(nom===""){
-          alert("Rellene los campos adecuadamente!!!");
-        }
-      };
+
 
     const [files, setFiles] = useState([]);
     const [value, setValue] = useState('');
@@ -169,15 +171,19 @@ const PublicationInput = ({ handleCancel, handleSubmit, filesDefault, valueDefau
                     className={classes.button}
                     disabled={disabledBtn}
                     onClick={() => {
-                        handleSubmit({
-                            content: value,
-                            type: 1,
-                            route: filesID
-                        });
-                        validar();
-                        cleanInput();
-                        handleCancel();
-                        sendFiles(files);
+                        if(validar()){
+                            handleSubmit({
+                                content: value,
+                                type: 1,
+                                route: filesID
+                            });
+                            cleanInput();
+                            handleCancel();
+                            sendFiles(files);
+                        }else{
+                            alert("Caracter no válido");
+                        }
+                        
                     }}
                 >
                     Enviar

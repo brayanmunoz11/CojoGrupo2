@@ -14,8 +14,14 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Redirect } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
-  root: { backgroundColor: "grey" },
-  card: { textAlign: "justified", maxWidth: 700, margin: "auto" },
+  root: { backgroundColor: "white" },
+  card: {
+    textAlign: "justified",
+    padding: 25,
+    maxWidth: 700,
+    margin: "auto",
+  },
+  edited: { color: "red" },
 }));
 
 const fetchMyUser = async () => {
@@ -28,7 +34,9 @@ const fetchMyUser = async () => {
 };
 
 const EditProfile = memo(() => {
+  const [update, setUpdate] = useState(false);
   const [edited, setEdited] = useState(false);
+  const [able, setAble] = useState(false);
   const [alert, setAlert] = useState(false);
   const [user, setUser] = useState("");
   const [name, setName] = useState("");
@@ -36,41 +44,49 @@ const EditProfile = memo(() => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   useEffect(() => {
-    const getUser = async () => {
-      await fetchMyUser().then((a) => {
-        setUser(a);
-        setName(a.name);
-        setSurname(a.surname);
-        setEmail(a.email);
-        setPhone(a.phone);
-      });
-    };
-    getUser();
-  }, []);
-
-  console.log(user);
+    if (able === false) {
+      const getUser = async () => {
+        await fetchMyUser().then((a) => {
+          setUser(a);
+          setName(a.name);
+          setSurname(a.surname);
+          setEmail(a.email);
+          setPhone(a.phone);
+        });
+      };
+      getUser();
+    }
+  }, [able]);
 
   const classes = useStyles();
   const nameChangeHandler = (e) => {
     setName(e.target.value);
+    setEdited(false);
+    setAble(true);
   };
   const surnameChangeHandler = (e) => {
     setSurname(e.target.value);
+    setEdited(false);
+    setAble(true);
   };
   const emailChangeHandler = (e) => {
     setEmail(e.target.value);
+    setEdited(false);
+    setAble(true);
   };
   const phoneChangeHandler = (e) => {
     setPhone(e.target.value);
+    setEdited(false);
+    setAble(true);
   };
   const submitHandler = (e) => {
     e.preventDefault();
     const regName = /^[a-zA-Z ]{2,30}$/;
-    if (!regName.test(name)) {
+    if (!regName.test(name) || name.trim().length === 0) {
       setAlert("Nombre inválido");
       return;
     }
-    if (!regName.test(surname)) {
+    if (!regName.test(surname) || surname.trim().length === 0) {
       setAlert("Apellido inválido");
       return;
     }
@@ -86,14 +102,16 @@ const EditProfile = memo(() => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        name: name,
-        surname: surname,
-        email: email,
+        name: name.trim(),
+        surname: surname.trim(),
+        email: email.trim(),
         phone: phone,
       }),
     })
       .then((response) => {
+        setAlert(false);
         setEdited(true);
+        setAble(false);
         return response.json();
       })
       .catch((error) => {
@@ -101,17 +119,28 @@ const EditProfile = memo(() => {
       });
   };
   const scapeHandler = () => {
-    setEdited(true);
+    setUpdate(false);
+    setAlert(false);
+    setEdited(false);
+    setAble(false);
+  };
+  const letsUpdate = () => {
+    setUpdate(true);
   };
   return (
     <main className={classes.root}>
-      {edited && <Redirect to="/profile" />}
       <Card className={classes.card}>
+        <h1>Mi perfil</h1>
         <form onSubmit={submitHandler}>
           <CardHeader
             avatar={<Avatar src="/broken-image.jpg" />}
             title={`${user.name} ${user.surname}`}
           />
+          {!update && (
+            <Button variant="contained" color="primary" onClick={letsUpdate}>
+              Editar perfil
+            </Button>
+          )}
           <CardContent>
             <Grid container spacing={3} alignItems="flex-end">
               <Grid item>
@@ -120,12 +149,22 @@ const EditProfile = memo(() => {
                 </aside>
               </Grid>
               <Grid item>
-                <TextField
-                  id="name"
-                  type="text"
-                  value={name}
-                  onChange={nameChangeHandler}
-                />
+                {update ? (
+                  <TextField
+                    id="name"
+                    type="text"
+                    value={name}
+                    onChange={nameChangeHandler}
+                  />
+                ) : (
+                  <TextField
+                    id="name"
+                    type="text"
+                    value={name}
+                    onChange={nameChangeHandler}
+                    disabled
+                  />
+                )}
               </Grid>
             </Grid>
             <Grid container spacing={3} alignItems="flex-end">
@@ -135,12 +174,22 @@ const EditProfile = memo(() => {
                 </aside>
               </Grid>
               <Grid item>
-                <TextField
-                  id="surname"
-                  type="text"
-                  value={surname}
-                  onChange={surnameChangeHandler}
-                />
+                {update ? (
+                  <TextField
+                    id="surname"
+                    type="text"
+                    value={surname}
+                    onChange={surnameChangeHandler}
+                  />
+                ) : (
+                  <TextField
+                    id="surname"
+                    type="text"
+                    value={surname}
+                    onChange={surnameChangeHandler}
+                    disabled
+                  />
+                )}
               </Grid>
             </Grid>
             <Grid container spacing={5} alignItems="flex-end">
@@ -150,13 +199,24 @@ const EditProfile = memo(() => {
                 </aside>
               </Grid>
               <Grid item>
-                <TextField
-                  required
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={emailChangeHandler}
-                />
+                {update ? (
+                  <TextField
+                    required
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={emailChangeHandler}
+                  />
+                ) : (
+                  <TextField
+                    required
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={emailChangeHandler}
+                    disabled
+                  />
+                )}
               </Grid>
             </Grid>
             <Grid container spacing={3} alignItems="flex-end">
@@ -166,12 +226,22 @@ const EditProfile = memo(() => {
                 </aside>
               </Grid>
               <Grid item>
-                <TextField
-                  id="phone"
-                  type="tel"
-                  value={phone}
-                  onChange={phoneChangeHandler}
-                />
+                {update ? (
+                  <TextField
+                    id="phone"
+                    type="tel"
+                    value={phone}
+                    onChange={phoneChangeHandler}
+                  />
+                ) : (
+                  <TextField
+                    id="phone"
+                    type="tel"
+                    value={phone}
+                    onChange={phoneChangeHandler}
+                    disabled
+                  />
+                )}
               </Grid>
             </Grid>
             <br />
@@ -180,19 +250,37 @@ const EditProfile = memo(() => {
                 <strong>{alert}</strong>
               </p>
             )}
+            {edited && (
+              <p className={classes.edited}>
+                <strong>Datos actualizados!</strong>
+              </p>
+            )}
           </CardContent>
-          <CardActions>
-            <Button variant="outlined" color="primary" type="submit">
-              Confirmar
-            </Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={scapeHandler}
-            >
-              Volver
-            </Button>
-          </CardActions>
+          {update && (
+            <CardActions>
+              {able ? (
+                <Button variant="outlined" color="primary" type="submit">
+                  Confirmar
+                </Button>
+              ) : (
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  type="submit"
+                  disabled
+                >
+                  Confirmar
+                </Button>
+              )}
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={scapeHandler}
+              >
+                Volver
+              </Button>
+            </CardActions>
+          )}
         </form>
       </Card>
     </main>

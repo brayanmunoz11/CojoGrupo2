@@ -93,7 +93,7 @@ const Login = () => {
             ?
             <CircularProgress/>       
             :  
-            <input type="submit" value="Ingresar"/>
+            <input type="submit" value="Ingresar" onClick={validar}/>
           }
         </form>
         <div className="ax-form__utils">

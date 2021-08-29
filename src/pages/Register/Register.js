@@ -129,35 +129,6 @@ const Register = () => {
        <Link to="/login"> ¿Ya tienes una cuenta? </Link>
      </div>
    </div>
-        {
-          logeado &&
-          <Redirect to="/" />
-        }
-      <div>
-        <h2 className="ax-form__title"> Registrate </h2>
-        <form className="ax-form__form" id="form" onSubmit={registration}>
-          <div className="ax-form__input">
-            <p> Nombres: </p>
-            <input name="name" type="text" value={cambio} onChange={handleChangeInput} placeholder="Ingrese Nombre Completo" required />
-          </div>
-          <div className="ax-form__input">
-            <p> Apellidos: </p>
-            <input name="surname" type="text" value={cambio2} onChange={handleChangeInput2} placeholder="Ingrese Nombre Completo" required />
-          </div>
-          <div className="ax-form__input">
-            <p> Correo Electr&oacute;nico: </p>
-            <input name="email" type="email" placeholder="Introduce tu correo electrónico aquí..." required />
-          </div>
-          <div className="ax-form__input">
-            <p> Contraseña: </p>
-            <input name="password" type="password" placeholder="Ingrese su Contraseña" required />
-          </div>
-          <input type="submit" value="Ingresar" />
-        </form>
-        <div className="ax-form__utils">
-          <Link to="/login"> ¿Ya tienes una cuenta? </Link>
-        </div>
-      </div>
       <Snackbar open={SBOpen} autoHideDuration={6000} onClose={closeSB}>
         <MuiAlert onClose={closeSB} severity="error" elevation={6} variant="filled">
           {error}

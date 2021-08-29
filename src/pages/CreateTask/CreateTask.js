@@ -5,55 +5,83 @@ import "./CreateTask.css"
 import { useHistory } from "react-router-dom";
 import { Alert } from "@material-ui/lab";
 
+const validarCampos = (e) => {
+    var nom=  document.getElementById("nombre").value.replace(/\s+/g, '')
+    var ap=  document.getElementById("des").value.replace(/\s+/g, '')
+    if(nom===""||ap===""){
+      alert("Rellene todos los campos!!");
+    }
+  };
+
 const CreateTask = () => {
 
     const [date, setTime] = useState("")
-    const [files, setFiles] = useState([]);
-    const [filesID, setFilesID] = useState([]);
+    const [filesid,setfilesid] = useState([])
+
     const [camposInvalidos, setcamposInvalidos] = useState(false)
+
     let history = useHistory();
 
     const CrearTarea = (e) => {
+        
         e.preventDefault();
         const form = e.target;
         const data = {
             course_id: sessionStorage.getItem("IDCourse"),
-            content: "TAREA: "+ form.title.value+" -> "+ form.description.value,
-            type: 0
+            content: "TAREA: " + form.title.value + " -> " + form.description.value,
+            type: 0,
+            route: filesid
         };
         console.log(form.title.value, form.description.value)
         if (form.title.value === "" || form.description.value === "") {
             console.log(form.title.value, form.description.value)
             setcamposInvalidos(true)
         } else {
-            fetch('https://colesroomgrupo.herokuapp.com/api/tasks', {
+            fetch('https://colesroomgrupo.herokuapp.com/api/publications', {
                 method: 'POST',
-                body: JSON.stringify(data),
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
-                }
-            })
-                .then(response => {
-                    if (response.status === 200) {
-                        return response.json()
-                    }
-                    else {
-                        console.log('Error: ' + response.status + ' ' + response.statusText)
-                    }
-                })
-                .then(json => {
-                    if (json) {
-                        setFiles([...files, json.file])
-                        setFilesID([...filesID, json.fileID])
-                    }
-                })
-                .catch(error => {
-                    console.log('Error: ' + error)
-                })
+                },
+                body: JSON.stringify(data)
+            }).then(response => { return response.json() })
             let topic = sessionStorage.getItem("IDCourse")
             sessionStorage.removeItem("IDCourse")
+            alert("TAREA CREADA")
             history.push(`/mycourses/${topic}`);
+        }
+    }
+
+    const handleUploadFiles = (ev) => {
+        let input = ev.target;
+        if (input.files && input.files[0]) {
+            let file = input.files[0];
+            if (file.size > 1048576) {
+                alert('El archivo es demasiado grande. El peso del archivo debe ser menor a 1 mb');
+                input.value = ""
+            } else {
+                const fileObj = {
+                    name: input.files[0].name,
+                    size: input.files[0].size,
+                    type: input.files[0].type,
+                }
+                fetch('https://colesroomgrupo.herokuapp.com/upload', {
+                    method: 'POST',
+                    body: JSON.stringify(fileObj),
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                }).then(response => { return response.json() })
+                    .then(json => {
+                        if (json) {
+                            setfilesid([json.fileID])
+                        }
+                    })
+                    .catch(error => {
+                        console.log('Error: ' + error)
+                    })
+            }
         }
     }
 
@@ -78,12 +106,18 @@ const CreateTask = () => {
                     <br></br>
                     <Form.Group controlId="exampleForm.ControlTextarea1">
                         <Form.Label>Descripcion de la tarea</Form.Label>
-                        <FormControl type="text" name="description" as="textarea" rows="3" style={{ resize: "none" }}/>
+                        <FormControl type="text" name="description" as="textarea" rows="3" style={{ resize: "none" }} />
                     </Form.Group>
                     <br></br>
                     <Form.Group>
                         <Form.Label>Subir Archivo (Opcional)</Form.Label>
-                        <Form.File id="exampleFormControlFile1" name="File" />
+                        <br></br>
+                        <input
+                            accept="image/*,.pdf"
+                            id="contained-button-file"
+                            type="file"
+                            onChange={handleUploadFiles}
+                        />
                     </Form.Group>
                     <br></br>
                     <Form.Group>
@@ -91,7 +125,7 @@ const CreateTask = () => {
                         <div className="contenedor">
                             <div className="center">
                                 <input type="datetime-local" defaultValue={date}
-                                    min={date} name="date"/>
+                                    min={date} name="date" />
                             </div>
                         </div>
                     </Form.Group>
@@ -101,7 +135,7 @@ const CreateTask = () => {
                 </Form>
                 {
                     camposInvalidos
-                        ? <div>
+                        ? <div>    
                             <br></br>
                             <Alert severity="error">Campos Vacios</Alert>
                         </div>

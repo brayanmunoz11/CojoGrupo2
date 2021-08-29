@@ -7,56 +7,70 @@ import backgroundImage2 from '../../imgs/CourseBackground2.jpg'
 import backgroundImage3 from '../../imgs/CourseBackground3.jpg'
 import { FormControlLabel, Radio, RadioGroup } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
-const CreateCourse = (props) => {
 
-  let history = useHistory()
-  const validar = (e) => {
-    var nom=  document.getElementById("nombre").value.replace(/\s+/g, '')
-    var ap=  document.getElementById("des").value.replace(/\s+/g, '')
-    if(nom===""||ap===""){
-      alert("Rellene todos los campos!!");
-    }
-  };
-  const [loading, setloading] = useState(false)
-  const registrarCurso = async (e) => {
-    setloading(true)
-    e.preventDefault();
-    const form = e.target;
-    const data = {
-      name: form.name.value,
-      category: form.category.value,
-      description: form.description.value,
-      image: form.image.value
-    };
+const validar = (e) => {
+  var nom=  document.getElementById("nombre").value.replace(/\s+/g, '')
+  var ap=  document.getElementById("des").value.replace(/\s+/g, '')
+  if(nom===""||ap===""){
+    //alert("Rellene todos los campos!!");
+    return false
+  }else{
+    return true
+  }
+  
+};
 
-    if (data.category === "privado") {
-      data.category = false
-    } else {
-      data.category = true
-    }
+  const CreateCourse = (props) => {
 
-    data.user_id = sessionStorage.getItem("user")
+    let history = useHistory()
+    
+    const [loading, setloading] = useState(false)
+    const registrarCurso = async (e) => {
+      e.preventDefault();
+      if(validar()){
+      setloading(true)
 
-    await fetch('https://colesroomgrupo.herokuapp.com/api/CreateCourse', {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+      const form = e.target;
+      const data = {
+        name: form.name.value,
+        category: form.category.value,
+        description: form.description.value,
+        image: form.image.value
+      };
+
+      if (data.category === "privado") {
+        data.category = false
+      } else {
+        data.category = true
       }
-    })
-      .then(res => res.json())
-      .then(res => {
-        setloading(false)
-        if (res) {
 
+      data.user_id = sessionStorage.getItem("user")
+      
+
+      /// aca
+      await fetch('https://colesroomgrupo.herokuapp.com/api/CreateCourse', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
         }
       })
-      .catch(err => alert("Fallo al Registrar"));
+        .then(res => res.json())
+        .then(res => {
+          setloading(false)
+          if (res) {
 
-    history.push("/");
-  };
-
+          }
+        })
+        .catch(err => alert("Fallo al Registrar"));
+        // aca
+      history.push("/");
+    }else{
+      alert("rellene los campos adecuadamente!!!")
+    }
+    };
+  
   const [value, setValue] = React.useState('privado');
 
   const handleChange = (event) => {
@@ -77,12 +91,12 @@ const CreateCourse = (props) => {
         </div>
         <Form.Group className="mb-2" controlId="formNameCourse">
           <Form.Label className="content-text">Nombre del curso</Form.Label>
-          <Form.Control type="text" name="name" placeholder="El nombre siempre es lo m&aacute;s importante..." class="content-text-label" />
+          <Form.Control type="text" name="name" id="nombre" placeholder="El nombre siempre es lo m&aacute;s importante..." class="content-text-label" />
         </Form.Group>
         <Form.Group className="mb-3" controlId="formDescriptionCourse" >
           <Form.Label className="content-text" >Descripci&oacute;n del curso</Form.Label>
           <InputGroup>
-            <FormControl type="text" name="description" as="textarea"
+            <FormControl type="text"  id="des"name="description" as="textarea"
               placeholder="Este curso mecece una bonita descripci&oacute;n..." rows="3" style={{ resize: "none" }} />
           </InputGroup>
         </Form.Group>
@@ -124,7 +138,7 @@ const CreateCourse = (props) => {
               ?
               <CircularProgress />
               :
-              <Button variant="success" type="submit" style={{ width: "20%", margin: "0 auto 0" }} >
+              <Button variant="success" type="submit" style={{ width: "20%", margin: "0 auto 0" }}  onClick={validar}>
                 Crear Curso
               </Button>
           }
@@ -133,6 +147,7 @@ const CreateCourse = (props) => {
       </Form>
     </div>
 
+    
   );
 };
 

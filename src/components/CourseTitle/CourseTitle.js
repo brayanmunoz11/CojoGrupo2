@@ -107,7 +107,9 @@ const CourseTitle = ({ name, description, date, backgroundImage, category, topic
         setediting(true)
     }
 
-    const handleCloseEditCourse = (ev) => {
+    const handleCloseEditCourse = (ev) => {        
+        setnewContent(description)
+        setnewTitle(name)
         setediting(false)
     }
 

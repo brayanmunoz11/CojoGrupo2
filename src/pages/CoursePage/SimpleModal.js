@@ -6,6 +6,7 @@ import "../../utils.css"
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { SortByAlpha } from '@material-ui/icons';
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 
 function getModalStyle() {
   const top = 50 ;
@@ -33,6 +34,7 @@ export default function SimpleModal() {
   const validaremail = (e) => {
     var nom=  document.getElementById("email").value.replace(/\s+/g, '')
     if(nom===""){
+
       alert("Digite un email válido!!");
     }
   };
@@ -90,15 +92,19 @@ export default function SimpleModal() {
 
   };
 
+  const inscribeStudent = () => {
+    validaremail()
+    addStudent()
+    handleClose()
+  }
 
   const handleClose = (e) => {
-    validaremail()
-    addStudent();
-    const id_curso = desicion
+    setOpen(false);    
   };
 
   const body = (
     <div style={modalStyle} className={classes.paper}>
+      <HighlightOffIcon onClick={handleClose} />  
       <h2 id="simple-modal-title">Inscribir Alumno</h2>
       <form className="ax-form__form" id="form">
 
@@ -109,7 +115,7 @@ export default function SimpleModal() {
         </div>
 
       </form>
-      <button className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedSecondary" type="button" onClick={handleClose}>Inscribir</button>
+      <button className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedSecondary" type="button" onClick={inscribeStudent}>Inscribir</button>
     </div>
   );
 
